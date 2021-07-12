@@ -1,0 +1,7 @@
+-   Form wrapper using Destroy Today's pattern
+    -   Handle form submit events _once_
+    -   Change course create to a modal?
+-   Floating presenter select
+    -   Put presnters in a store until form submits
+-   Floating list for link input
+    -   Put links in a store until form submit
