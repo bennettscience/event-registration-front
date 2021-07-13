@@ -12,6 +12,7 @@
     import Number from './formFields/Number.svelte';
     import TextArea from './formFields/TextArea.svelte';
 
+    // pass in a function handler to onSubmit by the parent.
     export let onSubmit;
     export let fields;
 
@@ -77,7 +78,20 @@
 </form>
 
 <style>
-    :global(input, select) {
-        margin: 5px;
+    button {
+        position: absolute;
+        right: 20px;
+        padding: 10px 30px;
+        border: 1px solid var(--accent-blue);
+        background-color: var(--accent-blue);
+        border-radius: 5px;
+        transition: all 0.25s ease-in-out;
+        font-weight: bold;
+        color: var(--text-white);
+    }
+    button:hover {
+        cursor: pointer;
+        background-color: var(--text-white);
+        color: var(--accent-blue);
     }
 </style>

@@ -7,12 +7,13 @@
 </script>
 
 <label style="grid-area: {name}"
-    >{label}
+    ><b>{label}</b>
     <input bind:value {placeholder} type="text" />
 </label>
 
 <style>
     input {
         width: 100%;
+        margin: 10px 0;
     }
 </style>

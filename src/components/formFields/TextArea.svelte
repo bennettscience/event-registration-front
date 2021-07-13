@@ -7,12 +7,13 @@
 </script>
 
 <label style="grid-area: {name}"
-    >{label}
+    ><b>{label}</b>
     <textarea bind:value {placeholder} />
 </label>
 
 <style>
     textarea {
         width: 100%;
+        margin: 10px 0;
     }
 </style>

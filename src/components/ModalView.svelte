@@ -1,34 +1,28 @@
 <script>
-    let isOpen = false;
+    export let modalText;
+    export let isModalOpen = false;
     function open() {
-        isOpen = true;
+        isModalOpen = true;
     }
     function close() {
-        isOpen = false;
+        isModalOpen = false;
     }
     // Wrapper component to handle modals. SubModalViews can be loaded
     // and API requests remain generic.
     const handleSubmit = () => {};
 </script>
 
-<slot name="trigger" {open}>
-    <button on:click={open}>Open</button>
-</slot>
-
-{#if isOpen}
+{#if isModalOpen}
     <div class="modal">
         <div class="backdrop" on:click={close} />
         <div class="content-wrapper">
-            <slot name="modal-header">
-                <div class="modal-header"><h1>This is the headr</h1></div>
-            </slot>
+            <div class="modal-header"><h1>{modalText.heading}</h1></div>
             <div class="modal-content">
-                <slot name="content" />
+                <p>{modalText.content}</p>
             </div>
-            <slot name="footer" {close}>
-                <div class="modal-footer"><p>This is the foot</p></div>
+            <div name="footer" {close}>
                 <button on:click={close}>close</button>
-            </slot>
+            </div>
         </div>
     </div>
 {/if}
@@ -42,7 +36,7 @@
         height: 100vh;
 
         display: flex;
-        justify-items: center;
+        justify-content: center;
         align-items: center;
     }
 
@@ -53,15 +47,36 @@
         background-color: rgba(0, 0, 0, 0.25);
     }
     .content-wrapper {
+        position: relative;
         z-index: 10;
         max-width: 70vw;
         border-radius: 5px;
         background-color: var(--text-white);
         overflow: hidden;
+        padding: 40px;
+        box-shadow: var(--box-shadow);
     }
 
     .modal-content {
         max-height: 50vh;
+        height: 25vh;
+        width: 25vw;
         overflow: auto;
+    }
+    button {
+        position: absolute;
+        bottom: 20px;
+        padding: 15px 40px;
+        border: 1px solid var(--accent-blue);
+        background-color: var(--accent-blue);
+        border-radius: 5px;
+        transition: all 0.25s ease-in-out;
+        font-weight: bold;
+        color: var(--text-white);
+    }
+    button:hover {
+        cursor: pointer;
+        background-color: var(--text-white);
+        color: var(--accent-blue);
     }
 </style>
