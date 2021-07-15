@@ -7,7 +7,7 @@
 </script>
 
 <label style="grid-area: {name}"
-    >{label}
+    ><b>{label}</b>
     <input type="number" bind:value {placeholder} />
 </label>
 

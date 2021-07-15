@@ -38,8 +38,8 @@
         <th>Email</th>
         <th>Attended</th>
     </thead>
-    {#if registrations.length > 0}
-        <tbody>
+    <tbody>
+        {#if registrations.length > 0}
             {#each registrations as user}
                 <AttendeeRow
                     {...user}
@@ -47,7 +47,11 @@
                     on:userAttended={userAttended}
                 />
             {/each}
-        </tbody>
+        {:else}
+            <tr><td>No registrations to display.</td></tr>
+        {/if}
+    </tbody>
+    {#if registrations.length > 0}
         <tfoot>
             <tr>
                 <td />

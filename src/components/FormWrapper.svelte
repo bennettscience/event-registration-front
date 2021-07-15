@@ -11,6 +11,7 @@
     import DateTime from './formFields/DateTime.svelte';
     import Number from './formFields/Number.svelte';
     import TextArea from './formFields/TextArea.svelte';
+    import Link from './formFields/Link.svelte';
 
     // pass in a function handler to onSubmit by the parent.
     export let onSubmit;
@@ -71,6 +72,14 @@
                 id={field.id}
                 label={field.label}
                 placeholder={field.placeholder}
+            />
+        {:else if field.type === 'Link'}
+            <Link
+                name={field.name}
+                uri={field.uri}
+                bind:value={field.value}
+                placeholder={field.placehodler}
+                label={field.label}
             />
         {/if}
     {/each}

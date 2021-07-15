@@ -35,7 +35,12 @@
     }
 </script>
 
-<div class="counter" bind:clientHeight={h} bind:clientWidth={w}>
+<!-- 
+    Using the $$props variable isn't great, but it's okay from time to time.  
+    See the note on https://svelte.dev/docs#:~:text=%24%24props%20references%20all%20props%20that%20are%20passed%20to%20a%20component%2C%20including%20ones%20that%20are%20not%20declared%20with%20export.%20It%20is%20not%20generally%20recommended%2C%20as%20it%20is%20difficult%20for%20Svelte%20to%20optimise.
+-->
+
+<div class="{$$props.class} counter" bind:clientHeight={h} bind:clientWidth={w}>
     {#if value}
         {#await getData()}
             <p>Loading...</p>

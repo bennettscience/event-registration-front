@@ -6,8 +6,6 @@
     import { locationFields } from '../assets/createLocationFields';
     import { eventFields } from '../assets/createEventFields';
 
-    // TODO: Add modal to create a new location
-    // TODO: Add modal to create a new course type
     // TODO: Add modal to add links to the event
     // TODO: Add modal to add presenters to the event
 
@@ -76,8 +74,12 @@
         };
     };
 
-    // TODO: Async function get get data from the database and populate form fields.
     const getFormFieldData = async () => {
+        // This is messy and could be cleaned up. When the component mounts, get
+        // location and event type data immedaitely and do two things:
+        // 1. Assign data to the parent prop so we can update it later (maybe)
+        // 2. Return an object for the form to populate select fields.
+
         let response = {};
 
         let reqLocations = await fetch('/locations');
@@ -99,7 +101,6 @@
     // When submitting, turn our fields representation into a JSON body and pass back to the parent for handling.
     const handleSubmit = () => {
         isModalOpen = true;
-        console.log(course);
         // TODO: Add some validation here
         createCourse(course);
     };
@@ -222,8 +223,6 @@
                 </fieldset>
                 <button type="submit">Submit</button>
             </form>
-            <!-- TODO: Handle result of request...modal? -->
-            <!-- <pre><code>{JSON.stringify(result, 0, 2)}</code></pre> -->
         {/await}
     {:else}
         <p>
@@ -345,14 +344,14 @@
         background-color: var(--text-white);
         color: var(--accent-blue);
     }
-    #close {
+    :global(#close) {
         vertical-align: middle;
     }
-    #close span {
+    :global(#close span) {
         font-size: 24px;
         padding: 5px;
     }
-    #close:hover {
+    :global(#close:hover) {
         cursor: pointer;
     }
 </style>

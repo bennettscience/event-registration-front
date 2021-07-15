@@ -4,13 +4,18 @@
     export let label;
     export let id;
     export let name;
+
+    let selected = '';
+    console.log(options);
 </script>
 
 <label style="grid-area:{name}"
-    >{label}
+    ><b>{label}</b>
     <select bind:value {id}>
         {#each options as option}
-            <option value={option.value}>{option.label}</option>
+            <option value={option.value} selected={value === option.value}
+                >{option.label}</option
+            >
         {/each}
     </select>
 </label>

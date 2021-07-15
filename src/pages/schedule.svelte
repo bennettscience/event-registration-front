@@ -11,7 +11,7 @@
         let req = await fetch(`/users/${$user.id}/registrations`);
         let data = await req.json();
 
-        let flat = data.map((course) => {
+        let courseAttending = data.map((course) => {
             if (course.attended) {
                 course.course['state'] = 'attended';
             } else {
@@ -20,8 +20,7 @@
             return course.course;
         });
 
-        console.log(flat);
-        return flat;
+        return courseAttending;
     }
 </script>
 

@@ -24,7 +24,7 @@
 </script>
 
 <label style="grid-area: {name}"
-    >{label}
+    ><b>{label}</b>
     <input type="datetime-local" bind:value /></label
 >
 
