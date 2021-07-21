@@ -4,18 +4,30 @@
     import Counter from '../components/admin/AdminCounter.svelte';
     import CourseData from '../components/admin/CourseData.svelte';
     import EditEventSubview from '../components/EditEventSubview.svelte';
+    import Modal from '../components/ModalView.svelte';
 
     export let isAuthenticated;
     let dataTarget = '';
     let sidebarVisible = false;
+    let isModalOpen = false;
     let courseId;
 
-    // TODO: Area for editing users. Needs to:
-    //  - Read/Write user account details
-    //  - Read user docs
-    //  - Read/write presenter account details
-    //  - read/write all courses
-    // let users;
+    let modalText = {
+        heading: 'Confirm Cancellation',
+        content:
+            'This will permanently delete the course, registrations, and the Google Calendar event. Are you SURE?',
+        response: '',
+    };
+
+    const handleDelete = async () => {
+        let req = await fetch(`/courses/${courseId}`, {
+            method: 'DELETE',
+        });
+        let response = await req.json();
+        modalText.content = response.message;
+        setTimeout(() => (isModalOpen = false), 2000);
+        modalText = modalText;
+    };
 </script>
 
 <section class="main-container">
@@ -35,21 +47,21 @@
         <hr />
         <!-- This section shows information on any event in the database. The event details can all be
         updated by an administrator. They can also edit event participation data. -->
-        <section class="course-data">
-            <CourseData
-                bind:courseId
-                on:editCourse={() => {
-                    sidebarVisible = true;
-                    dataTarget = 'course';
-                }}
-                on:editPresenters={() => {
-                    (sidebarVisible = true), (dataTarget = 'presenters');
-                }}
-                on:editLinks={() => {
-                    (sidebarVisible = true), (dataTarget = 'links');
-                }}
-            />
-        </section>
+
+        <CourseData
+            bind:courseId
+            on:editCourse={() => {
+                sidebarVisible = true;
+                dataTarget = 'course';
+            }}
+            on:editPresenters={() => {
+                (sidebarVisible = true), (dataTarget = 'presenters');
+            }}
+            on:editLinks={() => {
+                (sidebarVisible = true), (dataTarget = 'links');
+            }}
+            on:deleteCourse={() => (isModalOpen = true)}
+        />
     {/if}
 </section>
 {#if sidebarVisible}
@@ -58,7 +70,6 @@
             <span>&times</span>Cancel
         </p>
         {#if courseId !== null}
-            <!-- TODO: Make this big to update all items -->
             <EditEventSubview
                 on:success={() => (sidebarVisible = false)}
                 {courseId}
@@ -66,6 +77,14 @@
             />
         {/if}
     </section>
+{/if}
+{#if isModalOpen}
+    <Modal
+        bind:modalText
+        confirmRequired={true}
+        onSubmit={handleDelete}
+        bind:isModalOpen
+    />
 {/if}
 
 <style>

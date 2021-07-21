@@ -51,6 +51,6 @@ export let fields = [
 		value: '',
 		label: 'End',
 		datetime: new Date().toISOString(),
-		shift: true,
+		shift: false,
 	},
 ];

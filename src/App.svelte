@@ -15,6 +15,7 @@
     import Admin from './pages/admin.svelte';
     import Presenter from './pages/presenter.svelte';
     import Documents from './pages/documents.svelte';
+    import Users from './pages/users.svelte';
 
     // set default component
     let current = Home;
@@ -29,6 +30,7 @@
     page('/admin', () => (current = Admin));
     page('/presenter', () => (current = Presenter));
     page('/documents', () => (current = Documents));
+    page('/people', () => (current = Users));
 
     // activate router
     page.start();
@@ -48,9 +50,6 @@
             if (data.login === true) {
                 $user = data.user;
                 isAuthenticated = true;
-
-                console.log(data.user);
-                console.log($user);
             }
         } catch (err) {
             console.log(err);
@@ -82,7 +81,6 @@
                 }
 
                 $user = data.user;
-                console.log($user);
             }
         } catch (err) {
             console.log(err);

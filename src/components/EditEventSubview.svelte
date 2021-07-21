@@ -1,29 +1,24 @@
 <script>
+    import { user } from '../store';
     import { createEventDispatcher } from 'svelte';
-    import {
-        convertToPythonTimestamp,
-        handleErrors,
-        Requester,
-    } from '../utils.js';
+    import { convertToPythonTimestamp, handleErrors } from '../utils.js';
+    import { circleCheck } from '../assets/icons';
     import Form from './FormWrapper.svelte';
-    import ModalView from '../components/ModalView.svelte';
 
     // Props
     export let courseId;
     export let dataTarget;
 
+    const d = createEventDispatcher();
+
     // Instantiate some common data stores
-    let requester = new Requester('/');
     let links = [];
     let presenters = [];
     let fields = [];
     let result = null;
     let allowed = [];
-    let userId;
-    let request;
 
-    const d = createEventDispatcher();
-
+    // Determine the endpoint and method for each update operation.
     const targets = {
         course: {
             uri: `/courses/${courseId}`,
@@ -39,38 +34,40 @@
         },
     };
 
-    // function reduceFields(data) {
-    //     data.reduce((el, item) => ({ ...el, [item.name]: item.value }), {});
-    // }
-
     // Course changes
-    const getEventTypes = async () => {
-        let resp = await requester.request('get', 'courses/types', '', null, {
-            'Content-Type': 'application/json',
-        });
-        // let resp = await fetch('/courses/types');
-        // if (resp.ok) {
-        //     data = resp.json();
-        // }
-        console.log(resp);
-        return resp;
-    };
-
-    const getLocations = async () => {
-        let resp = await requester.request('/locations');
-        // let resp = await fetch('/locations');
-        return resp;
-    };
-
+    // Event types and locations are dynamic, so they need to be loaded when the component is mounted.
     const editCourse = async () => {
-        let req = await fetch(`/courses/${courseId}`);
-        let data = await req.json();
+        // Editing a course requires three endpoints:
+        //  - the course
+        //  - event types
+        //  - locations
+        // Fetch them all now and get the fields prepped for the form.
+        // Returns an object as {course: {}, types: [{}...], locations: [{}...]}
+        let data;
+        const urls = [`/courses/${courseId}`, `/courses/types`, `/locations`];
+        await Promise.all(
+            urls.map(async (url) => {
+                const resp = await fetch(url);
+                return await resp.json();
+            }),
+        ).then(
+            ([course, types, locations]) =>
+                (data = {
+                    course,
+                    types,
+                    locations,
+                }),
+        );
 
         // The object that comes back from the API is bigger than we need for presenters. Filter
         // the object down to the approved keys and build out a form fields array.
-        Object.keys(data)
+        // Because `data` is an array of objects, Object.keys() is needed to check the keys within
+        // each object instead of filtering directly.
+
+        const allowed = ['id', 'name']; // the only keys we want from types and locations
+        Object.keys(data.course)
             .filter((item) => {
-                allowed = [
+                let courseAllowed = [
                     'title',
                     'description',
                     'location',
@@ -80,19 +77,20 @@
                     'starts',
                     'ends',
                 ];
-                if (allowed.includes(item)) {
+                if (courseAllowed.includes(item)) {
                     return true;
                 } else {
                     return false;
                 }
             })
             .map(async (key) => {
+                // Map each key into a field object for the form
                 let field;
                 if (key === 'title') {
                     field = {
                         name: 'title',
                         type: 'Input',
-                        value: data[key],
+                        value: data.course[key],
                         placeholder: 'Enter title...',
                         label: 'Event Title',
                     };
@@ -100,7 +98,7 @@
                     field = {
                         name: 'description',
                         type: 'TextArea',
-                        value: data[key],
+                        value: data.course[key],
                         placeholder: '',
                         label: 'Event description',
                     };
@@ -109,14 +107,14 @@
                         name: key,
                         id: key,
                         type: 'DateTime',
-                        value: data[key],
-                        datetime: new Date().toISOString(),
+                        value: data.course[key],
+                        datetime: data.course[key],
                     };
                     if (key === 'starts') {
                         field.shift = false;
                         field.label = 'Starts';
                     } else {
-                        field.shift = true;
+                        field.shift = false;
                         field.label = 'Ends';
                     }
                 } else if (key === 'course_size') {
@@ -124,32 +122,27 @@
                         name: 'course_size',
                         id: 'course-size',
                         type: 'Number',
-                        value: data[key],
+                        value: data.course[key],
                         placeholder: data[key],
                         label: 'Attendance limit',
                     };
                 } else if (key === 'type') {
-                    let type = await getEventTypes();
-                    const allowed = ['id', 'name'];
-                    let types = type.map((item) =>
+                    let types = data.types.map((item) =>
                         allowed.reduce((idx, current) => {
                             idx[current] = item[current];
                             return { value: item.id, label: item.name };
                         }, {}),
                     );
-                    console.log(types);
                     field = {
                         name: 'coursetype_id',
                         id: 'course-type',
                         type: 'Select',
-                        value: data[key].id,
+                        value: data.course[key].id,
                         label: 'Event type',
                         options: types,
                     };
                 } else if (key === 'location') {
-                    let location = await getLocations();
-                    const allowed = ['id', 'name'];
-                    let locations = location.map((item) =>
+                    let locations = data.locations.map((item) =>
                         allowed.reduce((idx, current) => {
                             idx[current] = item[current];
                             return { value: item.id, label: item.name };
@@ -159,7 +152,7 @@
                         name: 'location_id',
                         id: 'location',
                         type: 'Select',
-                        value: data[key].id,
+                        value: data.course[key].id,
                         label: 'Location',
                         options: locations,
                     };
@@ -173,18 +166,36 @@
     };
 
     const editPresenters = async () => {
-        let users;
-        let req = handleErrors(await fetch(`/courses/${courseId}/presenters`));
-        presenters = await req.json();
+        let data, users;
+        let urls = [`/courses/${courseId}/presenters`];
+        if ($user.role.id === 1) {
+            urls = [...urls, `/users`];
+        } else if ($user.role.id === 2) {
+            urls = [...urls, `/users?user_type=2`];
+        }
 
-        let reqUsers = handleErrors(await fetch(`/users`));
-        users = await reqUsers.json();
+        await Promise.all(
+            urls.map(async (url) => {
+                const resp = await fetch(url);
+                return await resp.json();
+            }),
+        ).then(
+            ([presenters, users]) =>
+                (data = {
+                    presenters,
+                    users,
+                }),
+        );
+
+        presenters = data.presenters;
 
         const allowed = ['id', 'name'];
-        users = users
+        users = data.users
             .filter(
                 (user) =>
-                    !presenters.find((presenter) => presenter.id === user.id),
+                    !data.presenters.find(
+                        (presenter) => presenter.id === user.id,
+                    ),
             )
             .map((item) =>
                 allowed.reduce((idx, current) => {
@@ -192,11 +203,10 @@
                     return { value: item.id, label: item.name };
                 }, {}),
             );
-        console.log(users);
         fields = [
             {
                 type: 'Select',
-                label: 'Select a user',
+                label: 'Add as a presenter',
                 name: 'userId',
                 value: 1,
                 options: users,
@@ -205,15 +215,26 @@
     };
 
     const editLinks = async () => {
-        let req = handleErrors(await fetch(`/courses/${courseId}/links`));
-        links = await req.json();
+        let data, linktypes;
+        const urls = [`/courses/${courseId}/links`, `/courselinktypes`];
 
-        let reqLinkTypes = await handleErrors(await fetch(`/courselinktypes`));
-        let linktypes = await reqLinkTypes.json();
+        await Promise.all(
+            urls.map(async (url) => {
+                const resp = await fetch(url);
+                return await resp.json();
+            }),
+        ).then(
+            ([links, linkTypes]) =>
+                (data = {
+                    links,
+                    linkTypes,
+                }),
+        );
 
         let allowed = ['id', 'name'];
+        links = data.links;
 
-        linktypes = linktypes.map((item) =>
+        linktypes = data.linkTypes.map((item) =>
             allowed.reduce((idx, current) => {
                 idx[current] = item[current];
                 return { value: item.id, label: item.name };
@@ -226,7 +247,7 @@
                 type: 'Select',
                 name: 'courselinktype_id',
                 value: 1,
-                label: 'Link type',
+                label: '',
                 options: linktypes,
             },
             {
@@ -238,12 +259,13 @@
             },
             {
                 type: 'Link',
-                label: 'Link',
-                placeholder: 'https://your-link.com',
                 name: 'uri',
                 value: '',
+                label: '',
+                placeholder: 'https://example.com',
             },
         ];
+        fields = fields;
     };
 
     // Prefill form fields with existing values
@@ -259,22 +281,19 @@
     }
 
     const handleSubmit = async (data) => {
-        // TODO: Wrap this in the requester so it isn't such a mess.
-        // TODO: Handle link, presenter submissions.
         let endpoint = targets[dataTarget].uri;
         let method = targets[dataTarget].method;
-        console.log(data);
         result = 'Submitting change...';
 
-        // TODO: Move this into a new form handler
         if (dataTarget === 'course') {
             data.starts = convertToPythonTimestamp(data.starts);
             data.ends = convertToPythonTimestamp(data.ends);
+            console.log(data.starts);
+            console.log(data.ends);
         }
 
         if (dataTarget === 'presenters') {
             data = { user_ids: [data.userId] };
-            console.log(data);
         }
 
         let req = handleErrors(
@@ -289,7 +308,7 @@
 
         if (req.ok) {
             // let response = await req.json();
-            result = 'Successfully upated event.';
+            result = `Success!`;
             setTimeout(() => d('success'), 2000);
         }
     };
@@ -316,4 +335,7 @@
 {/if}
 
 <style>
+    #result {
+        position: relative;
+    }
 </style>

@@ -8,14 +8,17 @@
     export let isAuthenticated;
 
     let currentEvent = 'Select an event to load registrations';
+    let dataTarget;
     let registrations = [];
     let courseId = null;
+    let result = {};
     let visible = false;
 
     const showRegistered = (e) => {
-        registrations = e.detail.regs;
-        courseId = e.detail.courseId;
+        registrations = e.detail.registrations;
+        courseId = e.detail.id;
         currentEvent = e.detail.title;
+        result = e.detail;
     };
 
     const courseHeaders = [
@@ -39,6 +42,23 @@
 
     const editCourse = () => {
         console.log(courseId);
+    };
+
+    // TODO: Work into a utility script to handle any course ID
+    const changeCourseState = async () => {
+        let response;
+        let req = await fetch(`/courses/${courseId}`, {
+            method: 'PUT',
+            body: JSON.stringify({ active: !result.active }),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (req.ok) {
+            response = await req.json();
+            result = response.course;
+            return response;
+        }
     };
 </script>
 
@@ -70,7 +90,33 @@
                 <span
                     class="form-toggle"
                     role="button"
-                    on:click={() => (visible = true)}>Edit</span
+                    on:click={() => {
+                        visible = true;
+                        dataTarget = 'course';
+                    }}>Edit Event</span
+                >
+                <span
+                    class="form-toggle"
+                    role="button"
+                    on:click={() => {
+                        visible = true;
+                        dataTarget = 'presenters';
+                    }}>Edit Presenters</span
+                >
+                <span
+                    class="form-toggle"
+                    role="button"
+                    on:click={() => {
+                        visible = true;
+                        dataTarget = 'links';
+                    }}>Edit Links</span
+                >
+                <span
+                    class="form-toggle"
+                    class:cancelled={result.active}
+                    role="button"
+                    on:click={changeCourseState}
+                    >{#if result.active}Cancel Event{:else}Activate Event{/if}</span
                 >
             {/if}
         </section>
@@ -84,17 +130,16 @@
                 class="course-detail"
                 transition:fly={{ x: 200, duration: 500 }}
             >
+                <p id="close" on:click={() => (visible = false)}>
+                    <span>&times</span>Cancel
+                </p>
                 {#if courseId !== null}
                     <EditEventSubview
                         on:success={() => (visible = false)}
                         {courseId}
+                        bind:dataTarget
                     />
                 {/if}
-                <span
-                    role="button"
-                    class="form-toggle"
-                    on:click={() => (visible = false)}>Cancel</span
-                >
             </section>
         {/if}
     {/if}
@@ -115,6 +160,7 @@
     }
 
     .course-detail {
+        width: 50%;
         z-index: 1000;
     }
 
@@ -128,6 +174,7 @@
         justify-content: flex-start;
         align-items: center;
         align-content: center;
+        gap: 20px;
     }
 
     .course-heading h2 {
@@ -145,5 +192,9 @@
         cursor: pointer;
         background-color: var(--site-dark);
         color: var(--text-white);
+    }
+    .cancelled:hover {
+        border-color: var(--accent-red);
+        background-color: var(--accent-red);
     }
 </style>

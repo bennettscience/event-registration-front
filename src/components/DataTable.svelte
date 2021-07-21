@@ -18,11 +18,7 @@
         {#each data as row}
             <tr
                 on:click={() => {
-                    d('getRegistered', {
-                        courseId: row.id,
-                        regs: row.registrations,
-                        title: row.title,
-                    });
+                    d('getRegistered', row);
                 }}
             >
                 <td class="selector">{row.title}</td>

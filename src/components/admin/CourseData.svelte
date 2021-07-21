@@ -39,12 +39,10 @@
         registrations = data.registrations;
         courseId = data.id;
         result = data;
-        console.log(result);
         // rate = getRate(registrations);
     }
 
     const changeCourseState = async () => {
-        console.log(`Current: `, result.active);
         let response;
         let req = await fetch(`/courses/${courseId}`, {
             method: 'PUT',
@@ -55,9 +53,7 @@
         });
         if (req.ok) {
             response = await req.json();
-            console.log(response);
             result = response.course;
-            console.log(`Updated: `, result.active);
             return response;
         }
     };
@@ -85,11 +81,11 @@
     </section>
     {#if courseId}
         <section class="snapshot">
-            <Counter
+            <!-- <Counter
                 class="snapshot-counter"
                 label="Attendance rate"
                 count={rate}
-            />
+            /> -->
 
             <span
                 class="form-toggle"
@@ -111,6 +107,12 @@
             >
             <span role="button" on:click={changeCourseState}
                 >{#if result.active}Cancel Event{:else}Activate Event{/if}</span
+            >
+            <span
+                id="delete"
+                role="button"
+                on:click={d('deleteCourse', { courseId: courseId })}
+                >Delete Event</span
             >
         </section>
     {/if}
@@ -148,5 +150,15 @@
         background-color: var(--accent-blue);
         color: var(--text-white);
         border-color: var(--accent-blue);
+    }
+    #delete {
+        background-color: var(--accent-red);
+        border-color: var(--accent-red);
+        color: var(--text-white);
+        transition: all 0.25s ease-in-out;
+    }
+    #delete:hover {
+        background-color: var(--text-white);
+        color: var(--accent-red);
     }
 </style>

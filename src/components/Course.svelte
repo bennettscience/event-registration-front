@@ -35,7 +35,6 @@
             links: links,
         });
         d('showPanel', true);
-        console.log($courseDetail);
     }
 </script>
 

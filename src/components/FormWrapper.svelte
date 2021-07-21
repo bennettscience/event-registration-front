@@ -78,7 +78,7 @@
                 name={field.name}
                 uri={field.uri}
                 bind:value={field.value}
-                placeholder={field.placehodler}
+                placeholder={field.placeholder}
                 label={field.label}
             />
         {/if}

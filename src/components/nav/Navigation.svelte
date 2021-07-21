@@ -11,12 +11,20 @@
     const permissions = {
         User: ['home', 'schedule', 'documents', 'logout'],
         Observer: ['home', 'schedule', 'documents', 'logout'],
-        Presenter: ['home', 'schedule', 'documents', 'presenter', 'logout'],
+        Presenter: [
+            'home',
+            'schedule',
+            'documents',
+            'presenter',
+            'create',
+            'logout',
+        ],
         SuperAdmin: [
             'home',
             'schedule',
             'documents',
             'admin',
+            'users',
             'create',
             'logout',
         ],
@@ -50,9 +58,15 @@
         },
         {
             item: 'admin',
-            label: 'Site Admin',
+            label: 'Event Management',
             href: '/admin',
             icon: 'admin',
+        },
+        {
+            item: 'users',
+            label: 'User Management',
+            href: '/people',
+            icon: 'users',
         },
         { item: 'logout', label: 'Logout', href: '/logout', icon: 'logout' },
         {

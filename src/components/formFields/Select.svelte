@@ -6,7 +6,6 @@
     export let name;
 
     let selected = '';
-    console.log(options);
 </script>
 
 <label style="grid-area:{name}"

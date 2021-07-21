@@ -1,6 +1,9 @@
 <script>
+    export let onSubmit;
+    export let confirmRequired = false;
     export let modalText;
     export let isModalOpen = false;
+
     function open() {
         isModalOpen = true;
     }
@@ -9,7 +12,7 @@
     }
     // Wrapper component to handle modals. SubModalViews can be loaded
     // and API requests remain generic.
-    const handleSubmit = () => {};
+    const handleSubmit = () => onSubmit();
 </script>
 
 {#if isModalOpen}
@@ -21,7 +24,13 @@
                 <p>{modalText.content}</p>
             </div>
             <div name="footer" {close}>
-                <button on:click={close}>close</button>
+                {#if confirmRequired}
+                    <button id="confirm" on:click={handleSubmit}>Confirm</button
+                    >
+                    <button id="cancel" on:click={close}>Cancel</button>
+                {:else}
+                    <button id="cancel" on:click={close}>Close</button>
+                {/if}
             </div>
         </div>
     </div>
@@ -34,6 +43,7 @@
         left: 0;
         width: 100%;
         height: 100vh;
+        z-index: 1000;
 
         display: flex;
         justify-content: center;
@@ -63,19 +73,31 @@
         width: 25vw;
         overflow: auto;
     }
+    div[name='footer'] {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 15px;
+    }
     button {
-        position: absolute;
-        bottom: 20px;
-        padding: 15px 40px;
-        border: 1px solid var(--accent-blue);
-        background-color: var(--accent-blue);
+        padding: 10px 30px;
         border-radius: 5px;
         transition: all 0.25s ease-in-out;
         font-weight: bold;
-        color: var(--text-white);
     }
     button:hover {
         cursor: pointer;
+    }
+    #confirm {
+        color: var(--text-white);
+        border: 1px solid var(--accent-blue);
+        background-color: var(--accent-blue);
+    }
+    #cancel {
+        border: 1px solid var(--site-dark);
+        font-weight: normal;
+    }
+    #confirm:hover {
         background-color: var(--text-white);
         color: var(--accent-blue);
     }

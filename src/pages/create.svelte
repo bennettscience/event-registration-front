@@ -1,13 +1,11 @@
 <script>
     import { fly } from 'svelte/transition';
     import { user } from '../store';
+    import { handleErrors } from '../utils';
     import FormWrapper from '../components/FormWrapper.svelte';
     import Modal from '../components/ModalView.svelte';
     import { locationFields } from '../assets/createLocationFields';
     import { eventFields } from '../assets/createEventFields';
-
-    // TODO: Add modal to add links to the event
-    // TODO: Add modal to add presenters to the event
 
     // Form fields
     let fields; // generic variable to assign fields dynamically
@@ -46,7 +44,7 @@
                 let resp = await req.json();
                 courseTypes.push({ name: resp.name, id: resp.id });
                 courseTypes = courseTypes;
-                result = 'Your event type is now available to select.';
+                result = `Success!`;
                 setTimeout(() => (sidebarVisible = false), 2000);
             }
         };
@@ -68,7 +66,7 @@
                 let resp = await req.json();
                 locations.push({ name: resp.name, id: resp.id });
                 locations = locations;
-                result = 'Your location is now available to select.';
+                result = `Success!`;
                 setTimeout(() => (sidebarVisible = false), 2000);
             }
         };
@@ -82,6 +80,7 @@
 
         let response = {};
 
+        // Change to Promise.all and map
         let reqLocations = await fetch('/locations');
         let reqCourseTypes = await fetch('/courses/types');
 
@@ -94,7 +93,7 @@
             courseTypes = await reqCourseTypes.json();
             response['courseTypes'] = courseTypes;
         }
-        console.log(courseTypes);
+
         return response;
     };
 
@@ -111,19 +110,18 @@
         course.starts = new Date(course.starts).getTime() / 1000;
         course.ends = new Date(course.ends).getTime() / 1000;
 
-        // TODO: Wrap in handleError
-        let req = await fetch(`/courses`, {
-            method: 'POST',
-            body: JSON.stringify(course),
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-        if (req.ok) {
-            let response = await req.json();
-            modalText.heading = 'Success!';
-            modalText.content = `Successfully created ${response.title}.`;
-        }
+        let req = handleErrors(
+            await fetch(`/courses`, {
+                method: 'POST',
+                body: JSON.stringify(course),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }),
+        );
+        let response = await req.json();
+        modalText.heading = 'Success!';
+        modalText.content = `Successfully created ${response.title}.`;
     }
 </script>
 
@@ -234,7 +232,7 @@
     {/if}
 </section>
 {#if isModalOpen}
-    <Modal {modalText} bind:isModalOpen />
+    <Modal {modalText} confirmRequired={false} bind:isModalOpen />
 {/if}
 {#if sidebarVisible}
     <section transition:fly={{ x: 200, duration: 500 }} class="course-detail">
@@ -242,11 +240,12 @@
             <span>&times</span>Cancel
         </p>
         <svelte:component this={FormWrapper} {fields} {onSubmit} />
-        {result}
+        {#if result}
+            <span id="result">{result}</span>
+        {/if}
     </section>
 {/if}
 
-<!-- TODO: Style the form -->
 <style>
     .main-container {
         padding-right: 0;
@@ -353,5 +352,9 @@
     }
     :global(#close:hover) {
         cursor: pointer;
+    }
+    #result {
+        position: relative;
+        display: block;
     }
 </style>

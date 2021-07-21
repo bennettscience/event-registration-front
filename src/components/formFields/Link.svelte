@@ -2,14 +2,6 @@
     export let value;
     export let label;
     export let placeholder;
-
-    // TODO: Get link types to populate a select
-    // const getTypes = async () => {
-    //     let req = handleErrors(await fetch(`/courselinktypes`));
-    //     let resp = await req.json();
-    //     console.log(resp);
-    //     return resp;
-    // };
 </script>
 
 <label
