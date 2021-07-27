@@ -41,7 +41,7 @@
 
     onMount(async () => {
         try {
-            let req = await fetch('http://127.0.0.1:5000/getsession', {
+            let req = await fetch('/getsession', {
                 credentials: 'same-origin',
             });
 
@@ -93,13 +93,18 @@
         <Navigation bind:isAuthenticated />
         <svelte:component this={current} bind:isAuthenticated />
     {:else}
+        <!-- TODO: Style login page -->
         <h1>Log in</h1>
         <a href="/authorize/google">login with Google</a>
     {/if}
 </main>
 
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Roboto:wght@300;700&display=swap');
+    @font-face {
+        font-family: 'Oswald';
+        src: url('/fonts/Oswald-VariableFont_wght.ttf') format('truetype');
+    }
+    /* @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Roboto:wght@300;700&display=swap'); */
     :root {
         /* Colors */
         --site-gray: #c5c6c7;
