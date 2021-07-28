@@ -6,11 +6,13 @@
     import Modal from '../components/ModalView.svelte';
     import { locationFields } from '../assets/createLocationFields';
     import { eventFields } from '../assets/createEventFields';
+    import { presenter } from '../assets/icons';
 
     // Form fields
     let fields; // generic variable to assign fields dynamically
     let courseTypes;
     let locations;
+    let users;
 
     // Modal control to confirm event submission
     let isModalOpen = false;
@@ -77,22 +79,37 @@
         // location and event type data immedaitely and do two things:
         // 1. Assign data to the parent prop so we can update it later (maybe)
         // 2. Return an object for the form to populate select fields.
-
-        let response = {};
+        const urls = ['/locations', '/courses/types', '/users'];
+        let response;
 
         // Change to Promise.all and map
-        let reqLocations = await fetch('/locations');
-        let reqCourseTypes = await fetch('/courses/types');
+        await Promise.all(
+            urls.map(async (url) => {
+                const resp = await fetch(url);
+                return await resp.json();
+            }),
+        ).then(
+            ([locations, courseTypes, users]) =>
+                (response = {
+                    locations,
+                    courseTypes,
+                    users,
+                }),
+        );
+        // let reqLocations = await fetch('/locations');
+        // let reqCourseTypes = await fetch('/courses/types');
 
-        if (reqLocations.ok) {
-            locations = await reqLocations.json();
-            response['locations'] = locations;
-        }
+        // if (reqLocations.ok) {
+        //     locations = await reqLocations.json();
+        //     response['locations'] = locations;
+        // }
 
-        if (reqCourseTypes.ok) {
-            courseTypes = await reqCourseTypes.json();
-            response['courseTypes'] = courseTypes;
-        }
+        // if (reqCourseTypes.ok) {
+        //     courseTypes = await reqCourseTypes.json();
+        //     response['courseTypes'] = courseTypes;
+        // }
+
+        console.log(response);
 
         return response;
     };
@@ -122,6 +139,10 @@
         let response = await req.json();
         modalText.heading = 'Success!';
         modalText.content = `Successfully created ${response.title}.`;
+        setTimeout(() => {
+            isModalOpen = false;
+            modalText = {};
+        });
     }
 </script>
 
@@ -161,13 +182,21 @@
                 </fieldset>
                 <fieldset class="details">
                     <legend><h1>Event Details</h1></legend>
+                    <!-- <label id="presenter"
+                        ><b>Lead Facilitator</b>
+                        <select bind:value={course.presenter} name="presenters">
+                            {#each fields.users as user}
+                                <option value={user.id}>{user.name}</option>
+                            {/each}
+                        </select>
+                    </label> -->
                     <label id="type"
                         ><b>Event type</b>
                         <select
                             bind:value={course.coursetype_id}
                             name="coursetype_id"
                         >
-                            {#each courseTypes as type}
+                            {#each fields.courseTypes as type}
                                 <option value={type.id}>{type.name}</option>
                             {/each}
                         </select>
@@ -177,13 +206,14 @@
                             >Add new event type</span
                         >
                     </label>
+
                     <label id="location"
-                        >Event Location
+                        ><b>Event Location</b>
                         <select
                             bind:value={course.location_id}
                             name="location_id"
                         >
-                            {#each locations as location}
+                            {#each fields.locations as location}
                                 <option value={location.id}
                                     >{location.name}</option
                                 >
@@ -308,8 +338,9 @@
         width: 100%;
     }
     .details #type,
-    #location {
-        width: 50%;
+    #location,
+    #presenter {
+        width: 30%;
         flex: 1 0 auto;
         margin-bottom: 25px;
     }

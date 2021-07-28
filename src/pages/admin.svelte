@@ -19,6 +19,7 @@
         response: '',
     };
 
+    // TODO: Reset the course data
     const handleDelete = async () => {
         let req = await fetch(`/courses/${courseId}`, {
             method: 'DELETE',
