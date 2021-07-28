@@ -10,7 +10,7 @@
     <div class="month">
         <slot name="month" />
     </div>
-    <div class="date" style="font-size: {size}px">
+    <div class="date">
         <slot name="date" />
     </div>
 </div>
@@ -36,7 +36,29 @@
     }
     .date {
         text-align: center;
+        font-size: 60px;
         font-weight: 800;
         padding: 0;
+    }
+
+    @media only screen and (max-width: 767px) {
+        .calendar {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+            border-bottom-left-radius: 0;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+        .month {
+            width: auto;
+            font-size: 24px;
+        }
+        .date {
+            font-size: 32px;
+        }
     }
 </style>

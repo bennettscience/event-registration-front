@@ -1,13 +1,14 @@
 <script>
+    import { onMount } from 'svelte';
+    import { fly } from 'svelte/transition';
     import MenuItem from './MenuItem.svelte';
     import { user } from '../../store.js';
 
-    // Show nav items based on user role
-    // TODO: Subnav logic for administrative areas.
     let menu;
     let current = 'home';
     export let isAuthenticated;
 
+    // Show nav items based on user role
     const permissions = {
         User: ['home', 'schedule', 'documents', 'logout'],
         Observer: ['home', 'schedule', 'documents', 'logout'],
@@ -89,12 +90,17 @@
             });
     };
 
-    if ($user.role) {
-        menu = navItems.filter((el) => {
-            return permissions[$user.role['name']].indexOf(el.item) > -1;
-        });
+    if (isAuthenticated) {
+        if ($user.role) {
+            menu = navItems.filter((el) => {
+                return permissions[$user.role['name']].indexOf(el.item) > -1;
+            });
+            menu = menu;
+        } else {
+            menu = navItems[0];
+        }
     } else {
-        menu = navItems[0];
+        menu = [navItems[0]];
     }
 
     let showMobileMenu = false;
@@ -109,20 +115,14 @@
     };
 
     // Attach the media query listener onmount
-    // onMount(() => {
-    //     const mediaListener = window.matchMedia('(max-width: 767px)');
-    //     mediaListener.addListener(mediaQueryHandler);
-    // });
+    onMount(() => {
+        const mediaListener = window.matchMedia('(max-width: 767px)');
+        mediaListener.addListener(mediaQueryHandler);
+    });
 </script>
 
 <nav>
     <div class="inner">
-        <div
-            on:click={handleMobileIconClick}
-            class={`mobile-icon${showMobileMenu ? 'active' : ''}`}
-        >
-            <div class="middle-line" />
-        </div>
         <div class={`navbar-list${showMobileMenu ? ' mobile' : ''}`}>
             {#each menu as item}
                 <MenuItem bind:current {...item} />
@@ -142,5 +142,21 @@
         position: fixed;
         top: 0;
         left: 0;
+    }
+
+    @media only screen and (max-width: 767px) {
+        .mobile-icon {
+            display: none;
+        }
+
+        .navbar-list {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        nav {
+            width: 60px;
+        }
     }
 </style>

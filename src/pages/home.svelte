@@ -1,10 +1,13 @@
 <script>
     import { createEventDispatcher, onMount } from 'svelte';
+    import { fly } from 'svelte/transition';
     import Course from '../components/Course.svelte';
     import CourseDetails from '../components/CourseDetails.svelte';
     import { courses, courseDetail } from '../store.js';
 
     const d = createEventDispatcher();
+
+    let sidebarVisible = false;
 
     onMount(() => {
         $courseDetail = {};
@@ -53,17 +56,23 @@
 <section class="main-container">
     {#await $courses then courses}
         {#each courses as course}
-            <Course {...course} />
+            <Course
+                {...course}
+                on:showSidebar={() => (sidebarVisible = !sidebarVisible)}
+            />
         {/each}
     {/await}
 </section>
-<section class="course-detail">
-    {#if $courseDetail && Object.keys($courseDetail).length === 0 && $courseDetail.constructor === Object}
-        <h1>Select a course from the list.</h1>
-    {:else}
-        <CourseDetails />
-    {/if}
-</section>
+{#if sidebarVisible}
+    <section class="course-detail" transition:fly={{ x: 200, duration: 500 }}>
+        <p id="close" on:click={() => (sidebarVisible = false)}>
+            <span>&times</span>Close
+        </p>
+        <CourseDetails
+            on:hideSidebar={() => (sidebarVisible = !sidebarVisible)}
+        />
+    </section>
+{/if}
 
 <style>
     :global(.course-detail) {

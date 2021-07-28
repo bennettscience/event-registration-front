@@ -1,10 +1,12 @@
 <script>
-    import { beforeUpdate } from 'svelte';
-    import { clock, pin, users } from '../assets/icons.js';
+    import { beforeUpdate, createEventDispatcher } from 'svelte';
+    import { clock, pin, user } from '../assets/icons.js';
     import { courseDetail, courses } from '../store.js';
     import RegisterButton from './buttons/RegisterButton.svelte';
     import CancelButton from './buttons/CancelButton.svelte';
     import { formatDate } from '../utils.js';
+
+    const d = createEventDispatcher();
 
     let disabled;
     let index;
@@ -20,6 +22,7 @@
         });
         $courses[index].state = 'registered';
         $courseDetail.state = 'registered';
+        d('hideSidebar');
     }
 
     function handleCancel(event) {
@@ -31,6 +34,7 @@
         console.log(index);
         $courses[index].state = 'available';
         $courseDetail.state = 'available';
+        d('hideSidebar');
     }
 
     beforeUpdate(() => {
@@ -72,13 +76,13 @@
     {startDateTime} - {endTime}
 </time>
 <!-- TODO: This is undefined in the schedule view -->
-<span>
+<span id="course-size">
     <svg
         fill="none"
         viewBox="0 0 24 24"
         height="24"
         width="24"
-        xmlns="http://www.w3.org/2000/svg">{@html users}</svg
+        xmlns="http://www.w3.org/2000/svg">{@html user}</svg
     >
     {$courseDetail?.available}
 </span>
@@ -121,12 +125,12 @@
         margin: 15px 0;
     }
     h1 {
-        font-family: 'Oswald', sans-serif;
+        font-family: 'Oswald', Helvetica, Arial, sans-serif;
         font-size: 32px;
         margin: 0;
     }
     p {
-        font-family: 'Roboto', sans-serif;
+        font-family: 'Roboto', Helvetica, Arial, sans-serif;
     }
     hr {
         width: 70%;

@@ -166,6 +166,8 @@
     };
 
     const editPresenters = async () => {
+        // TODO: Remove presenter from event
+        // New User component with state actions
         let data, users;
         let urls = [`/courses/${courseId}/presenters`];
         if ($user.role.id === 1) {

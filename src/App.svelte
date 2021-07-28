@@ -2,11 +2,13 @@
     // TODO: Rename all instances of 'Course' to 'Event' for more generic naming.
 
     import { onMount } from 'svelte';
+    import { fly } from 'svelte/transition';
     import page from 'page';
 
     import { user } from './store';
 
     import Navigation from './components/nav/Navigation.svelte';
+    import Login from './components/Login.svelte';
 
     // Routing
     import Home from './pages/home.svelte';
@@ -18,7 +20,7 @@
     import Users from './pages/users.svelte';
 
     // set default component
-    let current = Home;
+    let current = Login;
 
     // Map routes to page. If a route is hit the current
     // reference is set to the route's component
@@ -37,9 +39,14 @@
 
     let isAuthenticated = false;
 
+    // Check the window width and load the approprate navigation items
+    let width;
+    let showMobileMenu = false;
+
     // TODO: Implement Observer role views, permissions.
 
-    onMount(async () => {
+    const getSession = async () => {
+        console.log(width);
         try {
             let req = await fetch('/getsession', {
                 credentials: 'same-origin',
@@ -50,53 +57,25 @@
             if (data.login === true) {
                 $user = data.user;
                 isAuthenticated = true;
+                current = Home;
             }
         } catch (err) {
             console.log(err);
         }
-    });
-
-    const login = async () => {
-        try {
-            let req = await fetch('/authorize/google', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                mode: 'no-cors',
-            });
-
-            let data = await req.json();
-
-            if (data.login == true) {
-                // All users are authenticated at login. Special users have different permissions
-                // and that is set with this check.
-                isAuthenticated = true;
-                if (data.user.role.id === 1) {
-                    $user.isAdmin = true;
-                } else if (data.user.role.id === 2) {
-                    $user.isPresenter = true;
-                } else if (data.user.role.id === 3) {
-                    $user.isObserver = true;
-                }
-
-                $user = data.user;
-            }
-        } catch (err) {
-            console.log(err);
-        }
+        isAuthenticated = isAuthenticated;
     };
 </script>
 
+<svelte:window bind:innerWidth={width} />
 <main>
-    {#if isAuthenticated}
+    {#await getSession() then session}
         <Navigation bind:isAuthenticated />
-        <svelte:component this={current} bind:isAuthenticated />
-    {:else}
-        <!-- TODO: Style login page -->
-        <h1>Log in</h1>
-        <a href="/authorize/google">login with Google</a>
-    {/if}
+        {#if isAuthenticated}
+            <svelte:component this={current} bind:isAuthenticated />
+        {:else}
+            <Login bind:isAuthenticated />
+        {/if}
+    {/await}
 </main>
 
 <style>
@@ -104,7 +83,15 @@
         font-family: 'Oswald';
         src: url('/fonts/Oswald-VariableFont_wght.ttf') format('truetype');
     }
-    /* @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Roboto:wght@300;700&display=swap'); */
+    @font-face {
+        font-family: 'Roboto';
+        src: url('/fonts/Roboto-Light.ttf') format('truetype');
+    }
+    @font-face {
+        font-family: 'Roboto Bold';
+        src: url('/fonts/Roboto-Bold.ttf') format('truetype');
+    }
+
     :root {
         /* Colors */
         --site-gray: #c5c6c7;
@@ -147,15 +134,19 @@
     }
     :global(.main-container) {
         padding-left: 256px;
-        padding-right: 362px;
         box-sizing: border-box;
         padding-top: 8px;
         padding-bottom: 8px;
         background-color: #fff;
     }
-    @media (min-width: 640px) {
+    @media (max-width: 767px) {
         main {
             max-width: none;
+        }
+
+        :global(.main-container) {
+            padding-left: 56px;
+            padding-right: 0;
         }
     }
 </style>

@@ -19,6 +19,7 @@
 
     // Do some magic on the starts/ends props
     let mo = new Intl.DateTimeFormat('en', { month: 'short' }).format(starts);
+
     let day = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(starts);
 
     function handleClick() {
@@ -34,7 +35,7 @@
             presenters: presenters,
             links: links,
         });
-        d('showPanel', true);
+        d('showSidebar');
     }
 </script>
 
@@ -49,9 +50,11 @@
         <h1>
             {title}
         </h1>
-        {#if state !== 'available'}
-            <UserCourseState {state} />
-        {/if}
+        <span>
+            {#if state !== 'available'}
+                <UserCourseState {state} />
+            {/if}
+        </span>
         <p>
             {description}
         </p>
@@ -85,5 +88,35 @@
     p {
         display: block;
         min-width: 100%;
+    }
+
+    @media only screen and (max-width: 767px) {
+        .course {
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .course-calendar {
+            width: 100%;
+        }
+
+        .course-details {
+            padding: 5px;
+            display: grid;
+            grid-template-areas: 'title' 'description' 'status';
+        }
+
+        .course-details h1 {
+            grid-area: title;
+            font-size: 24px;
+        }
+
+        .course-details span {
+            grid-area: status;
+        }
+
+        .course-details p {
+            grid-area: description;
+        }
     }
 </style>
