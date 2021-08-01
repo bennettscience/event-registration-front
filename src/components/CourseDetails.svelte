@@ -31,7 +31,6 @@
         index = $courses.findIndex((el) => {
             return el.id === change.courseId;
         });
-        console.log(index);
         $courses[index].state = 'available';
         $courseDetail.state = 'available';
         d('hideSidebar');
@@ -55,14 +54,20 @@
 <p>
     {$courseDetail?.description}
 </p>
-{#if $courseDetail.state === 'registered' && $courseDetail.state !== 'attended'}
-    <CancelButton id={$courseDetail.id} on:cancel={handleCancel} />
-{:else if $courseDetail.state === 'available' && $courseDetail.state !== 'attended'}
-    <RegisterButton
-        {disabled}
-        id={$courseDetail?.id}
-        on:register={handleRegister}
-    />
+{#if $courseDetail.available > 0}
+    {#if $courseDetail.state === 'registered' && $courseDetail.state !== 'attended'}
+        <CancelButton id={$courseDetail.id} on:cancel={handleCancel} />
+    {:else if $courseDetail.state === 'available' && $courseDetail.state !== 'attended'}
+        <RegisterButton
+            {disabled}
+            id={$courseDetail?.id}
+            on:register={handleRegister}>Register</RegisterButton
+        >
+    {/if}
+{:else}
+    <RegisterButton disabled="true" id={$courseDetail?.id}
+        >Event Full</RegisterButton
+    >
 {/if}
 <hr />
 <time>
