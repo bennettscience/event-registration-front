@@ -1,5 +1,5 @@
 <script>
-    import { beforeUpdate, createEventDispatcher } from 'svelte';
+    import { beforeUpdate, createEventDispatcher, onDestroy } from 'svelte';
     import { clock, pin, user } from '../assets/icons.js';
     import { courseDetail, courses } from '../store.js';
     import RegisterButton from './buttons/RegisterButton.svelte';
@@ -36,13 +36,15 @@
         d('hideSidebar');
     }
 
-    beforeUpdate(() => {
-        if ($courseDetail?.state !== 'available') {
-            disabled = true;
-        } else {
-            disabled = false;
-        }
-    });
+    // beforeUpdate(() => {
+    //     if ($courseDetail?.state !== 'available') {
+    //         disabled = true;
+    //     } else {
+    //         disabled = false;
+    //     }
+    // });
+
+    onDestroy(() => ($courseDetail = {}));
 
     $: startDateTime = formatDate('starts', $courseDetail.starts);
     $: endTime = formatDate('ends', $courseDetail.ends);
@@ -59,7 +61,7 @@
         <CancelButton id={$courseDetail.id} on:cancel={handleCancel} />
     {:else if $courseDetail.state === 'available' && $courseDetail.state !== 'attended'}
         <RegisterButton
-            {disabled}
+            disabled="false"
             id={$courseDetail?.id}
             on:register={handleRegister}>Register</RegisterButton
         >
@@ -89,7 +91,7 @@
         width="24"
         xmlns="http://www.w3.org/2000/svg">{@html user}</svg
     >
-    {$courseDetail?.available}
+    {$courseDetail.available}
 </span>
 <span>
     <svg

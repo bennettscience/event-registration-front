@@ -28,7 +28,7 @@
     }
 </script>
 
-<span class:disabled role="button" on:click={handleClick}> Register </span>
+<span class:disabled role="button" on:click={handleClick}> <slot /> </span>
 
 <style>
     span {

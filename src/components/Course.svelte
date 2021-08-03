@@ -63,14 +63,18 @@
 
 <style>
     .course {
-        box-shadow: var(--box-shadow);
+        display: grid;
+        gap: 12px;
+        grid-template-areas: 'calendar details';
+        grid-template-columns: auto 1fr;
         box-sizing: border-box;
         border-radius: 5px;
-        display: flex;
-        align-items: flex-start;
-        gap: 12px;
         margin-bottom: 20px;
+        box-shadow: var(--box-shadow);
         transition: all 0.125s ease-in-out;
+    }
+    .course-calendar {
+        grid-area: calendar;
     }
     .course:hover {
         box-shadow: var(--active-shadow);
@@ -79,6 +83,7 @@
     .course-details {
         display: flex;
         flex-direction: row;
+        grid-area: details;
         align-items: center;
         flex-wrap: wrap;
         justify-content: space-between;
@@ -87,11 +92,15 @@
     }
     p {
         display: block;
+        box-sizing: border-box;
         min-width: 100%;
+        text-align: justify;
+        padding-right: 20px;
     }
 
     @media only screen and (max-width: 767px) {
         .course {
+            display: flex;
             flex-direction: column;
             width: 100%;
         }

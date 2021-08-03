@@ -17,7 +17,11 @@
 
 <style>
     .calendar {
-        display: block;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        box-sizing: border-box;
+        height: 100%;
         padding: 10px;
         background-color: var(--accent-blue);
         color: var(--text-white);

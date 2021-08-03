@@ -45,7 +45,7 @@
 
 <tr data-id={id}>
     <td>{name}</td>
-    <td>{location.name}</td>
+    <td>Coming soon!</td>
     <td>{email}</td>
     <td>
         <select bind:value {id} on:blur={handleChange}>

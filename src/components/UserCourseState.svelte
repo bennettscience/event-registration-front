@@ -35,6 +35,7 @@
     div {
         display: flex;
         align-items: center;
+        margin-right: 20px;
     }
     p {
         margin-left: 4px;

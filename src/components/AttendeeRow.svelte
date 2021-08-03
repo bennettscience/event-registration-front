@@ -24,7 +24,7 @@
 
 <tr data-id={user.id} on:click={updateAttended}>
     <td>{user.name}</td>
-    <td>{user.location.name}</td>
+    <td>{user.location?.name}</td>
     <td>{user.email}</td>
     <td
         >{#if attended}

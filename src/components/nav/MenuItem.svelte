@@ -86,6 +86,9 @@
         text-decoration: none;
         color: var(--text-white);
         flex: 1;
+        display: inline-flex;
+        height: 100%;
+        align-items: center;
     }
 
     svg {
@@ -96,10 +99,11 @@
     @media only screen and (max-width: 767px) {
         .mobile-icon {
             display: flex;
+            flex-direction: column;
+            justify-content: center;
             border: 0;
             padding: 0;
             width: 100%;
-            text-align: center;
         }
 
         .active {

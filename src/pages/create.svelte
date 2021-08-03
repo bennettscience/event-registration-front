@@ -10,8 +10,9 @@
 
     // Form fields
     let fields; // generic variable to assign fields dynamically
-    let courseTypes;
-    let locations;
+    let courseTypes = [];
+    let locations = [];
+    let response;
     let users;
 
     // Modal control to confirm event submission
@@ -47,7 +48,10 @@
                 courseTypes.push({ name: resp.name, id: resp.id });
                 courseTypes = courseTypes;
                 result = `Success!`;
-                setTimeout(() => (sidebarVisible = false), 2000);
+                setTimeout(
+                    () => ((sidebarVisible = false), (result = '')),
+                    2000,
+                );
             }
         };
     };
@@ -56,7 +60,6 @@
         sidebarVisible = true;
         fields = locationFields;
         onSubmit = async (data) => {
-            console.log(data);
             let req = await fetch('/locations', {
                 method: 'POST',
                 body: JSON.stringify(data),
@@ -69,7 +72,10 @@
                 locations.push({ name: resp.name, id: resp.id });
                 locations = locations;
                 result = `Success!`;
-                setTimeout(() => (sidebarVisible = false), 2000);
+                setTimeout(
+                    () => ((sidebarVisible = false), (result = '')),
+                    2000,
+                );
             }
         };
     };
@@ -80,7 +86,6 @@
         // 1. Assign data to the parent prop so we can update it later (maybe)
         // 2. Return an object for the form to populate select fields.
         const urls = ['/locations', '/courses/types', '/users'];
-        let response;
 
         // Change to Promise.all and map
         await Promise.all(
@@ -88,14 +93,19 @@
                 const resp = await fetch(url);
                 return await resp.json();
             }),
-        ).then(
-            ([locations, courseTypes, users]) =>
-                (response = {
-                    locations,
-                    courseTypes,
-                    users,
-                }),
-        );
+        ).then((result) => {
+            console.log(result);
+            locations = result[0];
+            courseTypes = result[1];
+            // users = users;
+
+            // response = {
+            //     locations,
+            //     courseTypes,
+            //     users,
+            // };
+        });
+        // console.log(response);
         // let reqLocations = await fetch('/locations');
         // let reqCourseTypes = await fetch('/courses/types');
 
@@ -109,7 +119,7 @@
         //     response['courseTypes'] = courseTypes;
         // }
 
-        console.log(response);
+        // console.log(response);
 
         return response;
     };
@@ -121,6 +131,7 @@
         createCourse(course);
     };
 
+    // TODO: Clear the form after submit.
     async function createCourse(course) {
         // Python has timestamps in seconds, JS is in millisecons. Convert
         // on the client before submitting.
@@ -142,7 +153,7 @@
         setTimeout(() => {
             isModalOpen = false;
             modalText = {};
-        });
+        }, 2000);
     }
 </script>
 
@@ -196,7 +207,7 @@
                             bind:value={course.coursetype_id}
                             name="coursetype_id"
                         >
-                            {#each fields.courseTypes as type}
+                            {#each courseTypes as type}
                                 <option value={type.id}>{type.name}</option>
                             {/each}
                         </select>
@@ -213,7 +224,7 @@
                             bind:value={course.location_id}
                             name="location_id"
                         >
-                            {#each fields.locations as location}
+                            {#each locations as location}
                                 <option value={location.id}
                                     >{location.name}</option
                                 >
