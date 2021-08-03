@@ -15,6 +15,15 @@
     let response;
     let users;
 
+    // Bind the form itself to reset values on submit
+    let formEl;
+
+    const modalInitial = {
+        heading: '',
+        content: '',
+        response: '',
+    };
+
     // Modal control to confirm event submission
     let isModalOpen = false;
     let modalText = {
@@ -125,10 +134,12 @@
     };
 
     // When submitting, turn our fields representation into a JSON body and pass back to the parent for handling.
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         isModalOpen = true;
         // TODO: Add some validation here
-        createCourse(course);
+        await createCourse(course)
+            .then((course = {}))
+            .catch((e) => console.log(e));
     };
 
     // TODO: Clear the form after submit.
@@ -152,25 +163,24 @@
         modalText.content = `Successfully created ${response.title}.`;
         setTimeout(() => {
             isModalOpen = false;
-            modalText = {};
+            modalText = modalInitial;
+            fields = getFormFieldData();
         }, 2000);
     }
 </script>
 
 <section class="main-container">
     {#if $user.role.id === 1 || $user.role.id === 2}
-        <!-- <Modal {isOpen}>
-            <div slot="modal-content">
-                This isthe modal contenet inserted into the slot
-            </div>
-        </Modal> -->
         <h1>New Event</h1>
         <p>
             This form will create and publish a new event. You can edit the
             event later in the <b>Presenter dashboard</b> if you need to make a change.
         </p>
         {#await getFormFieldData() then fields}
-            <form on:submit|preventDefault={() => handleSubmit(fields)}>
+            <form
+                on:submit|preventDefault={() => handleSubmit(fields)}
+                bind:this={formEl}
+            >
                 <fieldset class="basics">
                     <legend><h1>Basics</h1></legend>
                     <label
