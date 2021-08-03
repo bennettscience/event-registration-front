@@ -1,8 +1,10 @@
 <script>
+    import Loader from './Loader.svelte';
     export let onSubmit;
     export let confirmRequired = false;
     export let modalText;
     export let isModalOpen = false;
+    export let loading = false;
 
     function open() {
         isModalOpen = true;
@@ -24,7 +26,9 @@
                 <p>{modalText.content}</p>
             </div>
             <div name="footer" {close}>
-                {#if confirmRequired}
+                {#if loading}
+                    <Loader />
+                {:else if confirmRequired}
                     <button id="confirm" on:click={handleSubmit}>Confirm</button
                     >
                     <button id="cancel" on:click={close}>Cancel</button>

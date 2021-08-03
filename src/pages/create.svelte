@@ -26,6 +26,7 @@
 
     // Modal control to confirm event submission
     let isModalOpen = false;
+    let loading = false;
     let modalText = {
         heading: 'Submitting',
         content: 'Submiting the event...',
@@ -136,6 +137,7 @@
     // When submitting, turn our fields representation into a JSON body and pass back to the parent for handling.
     const handleSubmit = async () => {
         isModalOpen = true;
+        loading = true;
         // TODO: Add some validation here
         await createCourse(course)
             .then((course = {}))
@@ -158,14 +160,18 @@
                 },
             }),
         );
-        let response = await req.json();
-        modalText.heading = 'Success!';
-        modalText.content = `Successfully created ${response.title}.`;
-        setTimeout(() => {
-            isModalOpen = false;
-            modalText = modalInitial;
-            fields = getFormFieldData();
-        }, 2000);
+        if (req.ok) {
+            let response = await req.json();
+            modalText.heading = 'Success!';
+            modalText.content = `Successfully created ${response.title}.`;
+
+            loading = false;
+            setTimeout(() => {
+                isModalOpen = false;
+                modalText = modalInitial;
+                fields = getFormFieldData();
+            }, 2000);
+        }
     }
 </script>
 
@@ -283,7 +289,7 @@
     {/if}
 </section>
 {#if isModalOpen}
-    <Modal {modalText} confirmRequired={false} bind:isModalOpen />
+    <Modal {modalText} confirmRequired={false} bind:isModalOpen bind:loading />
 {/if}
 {#if sidebarVisible}
     <section transition:fly={{ x: 200, duration: 500 }} class="course-detail">
