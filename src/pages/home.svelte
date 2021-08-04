@@ -10,7 +10,7 @@
     let sidebarVisible = false;
 
     onMount(() => {
-        $courseDetail = {};
+        $courseDetail = courseDetailInitial;
         getCourses();
     });
 
