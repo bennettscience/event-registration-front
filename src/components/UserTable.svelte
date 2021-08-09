@@ -1,6 +1,7 @@
 <script>
     import UserRow from './UserRow.svelte';
     export let users;
+    export let isModalOpen;
 </script>
 
 <table>
@@ -9,11 +10,12 @@
         <th>Building</th>
         <th>Email</th>
         <th>Role</th>
+        <th>Action</th>
     </thead>
     <tbody>
         {#if users.length > 0}
             {#each users as user}
-                <UserRow {...user} />
+                <UserRow {...user} on:editUser />
             {/each}
         {:else}
             <tr><td>No users to display.</td></tr>

@@ -3,12 +3,23 @@
     import { handleErrors } from '../utils.js';
     import Counter from '../components/admin/AdminCounter.svelte';
     import UserTable from '../components/UserTable.svelte';
+    import Modal from '../components/ModalView.svelte';
 
     let userType;
     let users = [];
-
-    let userTypes;
     let fields;
+
+    // Modal props
+    let isModalOpen = false;
+    let loading = false;
+    let confirmRequired = false;
+
+    let modalText = {
+        heading: '',
+        content: '',
+    };
+
+    console.log(isModalOpen);
 
     const findUsers = async () => {
         let req = await fetch(`/users?user_type=${userType}`);
@@ -35,7 +46,10 @@
     {/if}
     <hr />
     {#if users.length > 0}
-        <UserTable {users} {fields} />
+        <UserTable {users} {fields} on:editUser={() => (isModalOpen = true)} />
+    {/if}
+    {#if isModalOpen}
+        <Modal {modalText} {confirmRequired} bind:isModalOpen bind:loading />
     {/if}
 </section>
 

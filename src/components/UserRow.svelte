@@ -1,11 +1,16 @@
 <script>
+    import { createEventDispatcher } from 'svelte';
     import { handleErrors } from '../utils';
+
+    const d = createEventDispatcher();
 
     export let name;
     export let id;
     export let location;
     export let email;
     export let role;
+
+    export let isModalOpen;
 
     let value = role.id;
 
@@ -41,6 +46,10 @@
         let data = await req.json();
         console.log(data);
     };
+
+    const editUser = () => {
+        d('editUser');
+    };
 </script>
 
 <tr data-id={id}>
@@ -55,6 +64,9 @@
                 >
             {/each}
         </select>
+    </td>
+    <td>
+        <button on:click={editUser}>Edit</button>
     </td>
 </tr>
 
