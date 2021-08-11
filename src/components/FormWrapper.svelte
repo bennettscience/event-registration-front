@@ -12,6 +12,7 @@
     import Number from './formFields/Number.svelte';
     import TextArea from './formFields/TextArea.svelte';
     import Link from './formFields/Link.svelte';
+    import Hidden from './formFields/Hidden.svelte';
 
     // pass in a function handler to onSubmit by the parent.
     export let onSubmit;

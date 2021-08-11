@@ -3,7 +3,7 @@
     import { user } from '../store';
     import DataTable from '../components/DataTable.svelte';
     import RegistrationTable from '../components/RegistrationTable.svelte';
-    import EditEventSubview from '../components/EditEventSubview.svelte';
+    import EditEventSubview from '../components/EditResourceSubview.svelte';
 
     export let isAuthenticated;
 
@@ -13,6 +13,7 @@
     let courseId = null;
     let result = {};
     let visible = false;
+    let courses;
 
     const showRegistered = (e) => {
         registrations = e.detail.registrations;
@@ -30,19 +31,15 @@
 
     async function getCourses() {
         let req = await fetch(`/users/${$user.id}/presenting`);
-        let data = await req.json();
+        courses = await req.json();
 
-        data.map((el) => {
+        courses.map((el) => {
             el['state'] = 'registered';
             return el;
         });
 
-        return data;
+        return courses;
     }
-
-    const editCourse = () => {
-        console.log(courseId);
-    };
 
     // TODO: Work into a utility script to handle any course ID
     const changeCourseState = async () => {
@@ -60,6 +57,8 @@
             return response;
         }
     };
+
+    $: courses;
 </script>
 
 <section class="main-container">
@@ -79,7 +78,6 @@
                     data={courses}
                     headers={courseHeaders}
                     on:getRegistered={showRegistered}
-                    on:editCourse={editCourse}
                     bind:currentEvent
                 />
             {/await}
@@ -87,6 +85,14 @@
         <section class="course-heading">
             <h2>{currentEvent}</h2>
             {#if courseId !== null}
+                <span
+                    class="form-toggle"
+                    role="button"
+                    on:click={() => {
+                        visible = true;
+                        dataTarget = 'duplicate';
+                    }}>Duplicate Event</span
+                >
                 <span
                     class="form-toggle"
                     role="button"
@@ -135,8 +141,11 @@
                 </p>
                 {#if courseId !== null}
                     <EditEventSubview
-                        on:success={() => (visible = false)}
-                        {courseId}
+                        on:success={async () => {
+                            visible = false;
+                            courses = await getCourses();
+                        }}
+                        resourceId={courseId}
                         bind:dataTarget
                     />
                 {/if}

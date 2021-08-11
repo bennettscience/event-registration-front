@@ -26,12 +26,16 @@
             uri: `/courses/${resourceId}`,
             method: 'PUT',
         },
-        presenters: {
-            uri: `/courses/${resourceId}/presenters`,
+        duplicate: {
+            uri: `/courses`,
             method: 'POST',
         },
         links: {
             uri: `/courses/${resourceId}/links`,
+            method: 'POST',
+        },
+        presenters: {
+            uri: `/courses/${resourceId}/presenters`,
             method: 'POST',
         },
         user: {
@@ -314,6 +318,59 @@
         fields = fields;
     };
 
+    const duplicateEvent = async () => {
+        console.log(resourceId);
+        // Get the requested course and store data in hidden fields
+        // Only show the start/end fields and title
+        let request = handleErrors(await fetch(`/courses/${resourceId}`));
+        data = await request.json();
+
+        console.log(data);
+
+        fields = [
+            {
+                type: 'Input',
+                name: 'title',
+                value: data.title,
+                label: 'Title',
+                placeholder: '',
+            },
+            {
+                type: 'DateTime',
+                name: 'starts',
+                value: data.starts,
+                label: 'Start',
+            },
+            {
+                type: 'DateTime',
+                name: 'ends',
+                value: data.ends,
+                label: 'End',
+            },
+            {
+                type: 'Hidden',
+                value: data.description,
+                name: 'description',
+            },
+            {
+                type: 'Hidden',
+                value: data.type.id,
+                name: 'coursetype_id',
+            },
+            {
+                type: 'Hidden',
+                value: data.location.id,
+                name: 'location_id',
+            },
+            {
+                type: 'Hidden',
+                value: data.course_size,
+                name: 'course_size',
+            },
+        ];
+        fields = fields;
+    };
+
     // Prefill form fields with existing values
     // TODO: could this be cleaner?
     if (dataTarget === 'course') {
@@ -324,16 +381,19 @@
         editLinks();
     } else if (dataTarget === 'user') {
         editUser();
+    } else if (dataTarget === 'duplicate') {
+        duplicateEvent();
     } else {
         console.log(`That's not allowed.`);
     }
 
     const handleSubmit = async (data) => {
+        console.log(data);
         let endpoint = targets[dataTarget].uri;
         let method = targets[dataTarget].method;
         result = 'Submitting change...';
 
-        if (dataTarget === 'course') {
+        if (dataTarget === 'course' || dataTarget === 'duplicate') {
             data.starts = convertToPythonTimestamp(data.starts);
             data.ends = convertToPythonTimestamp(data.ends);
         }
@@ -342,20 +402,19 @@
             data = { user_ids: [data.userId] };
         }
 
-        let req = handleErrors(
-            await fetch(endpoint, {
+        try {
+            let req = await fetch(endpoint, {
                 method: method,
                 body: JSON.stringify(data),
                 headers: {
                     'Content-Type': 'application/json',
                 },
-            }),
-        );
-
-        if (req.ok) {
-            // let response = await req.json();
+            });
+            let response = await req.json();
             result = `Success!`;
             setTimeout(() => d('success'), 2000);
+        } catch (e) {
+            console.log(e);
         }
     };
 </script>
@@ -374,6 +433,13 @@
 </ul>
 
 {#await fields then fields}
+    {#if dataTarget === 'duplicate'}
+        <b>Duplicate Event</b>
+        <p>
+            Enter a new title, start time, and end time for the event. Other
+            event details will be copied automatically.
+        </p>
+    {/if}
     <Form {fields} onSubmit={(body) => handleSubmit(body)} />
 {/await}
 {#if data?.registrations}
