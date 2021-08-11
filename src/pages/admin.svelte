@@ -3,7 +3,7 @@
     import { user } from '../store';
     import Counter from '../components/admin/AdminCounter.svelte';
     import CourseData from '../components/admin/CourseData.svelte';
-    import EditEventSubview from '../components/EditEventSubview.svelte';
+    import EditEventSubview from '../components/EditResourceSubview.svelte';
     import Modal from '../components/ModalView.svelte';
 
     export let isAuthenticated;
