@@ -1,7 +1,6 @@
 <script>
     import UserRow from './UserRow.svelte';
     export let users;
-    export let isModalOpen;
 </script>
 
 <table>
@@ -29,6 +28,7 @@
     }
 
     table {
+        width: 100%;
         border-collapse: collapse;
         border: 0;
     }

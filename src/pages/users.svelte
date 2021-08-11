@@ -1,25 +1,18 @@
 <script>
+    import { fly } from 'svelte/transition';
     import { user } from '../store.js';
     import { handleErrors } from '../utils.js';
-    import Counter from '../components/admin/AdminCounter.svelte';
     import UserTable from '../components/UserTable.svelte';
-    import Modal from '../components/ModalView.svelte';
+    import EditUserSubview from '../components/EditResourceSubview.svelte';
 
     let userType;
     let users = [];
     let fields;
 
-    // Modal props
-    let isModalOpen = false;
-    let loading = false;
-    let confirmRequired = false;
-
-    let modalText = {
-        heading: '',
-        content: '',
-    };
-
-    console.log(isModalOpen);
+    // sidebar props
+    let dataTarget = '';
+    let sidebarVisible = false;
+    let userId;
 
     const findUsers = async () => {
         let req = await fetch(`/users?user_type=${userType}`);
@@ -46,16 +39,41 @@
     {/if}
     <hr />
     {#if users.length > 0}
-        <UserTable {users} {fields} on:editUser={() => (isModalOpen = true)} />
-    {/if}
-    {#if isModalOpen}
-        <Modal {modalText} {confirmRequired} bind:isModalOpen bind:loading />
+        <UserTable
+            {users}
+            {fields}
+            on:editUser={(e) => {
+                sidebarVisible = true;
+                dataTarget = 'user';
+                userId = e.detail.userId;
+            }}
+        />
     {/if}
 </section>
+{#if sidebarVisible}
+    <section class="course-detail" transition:fly={{ x: 200, duration: 500 }}>
+        <p id="close" on:click={() => (sidebarVisible = false)}>
+            <span>&times</span>Cancel
+        </p>
+        {#if userId !== null}
+            <EditUserSubview
+                on:success={() => {
+                    sidebarVisible = false;
+                }}
+                resourceId={userId}
+                bind:dataTarget
+            />
+        {/if}
+    </section>
+{/if}
 
 <!-- markup (zero or more items) goes here -->
 <style>
     .main-container {
         padding-right: 0;
+    }
+    .course-detail {
+        width: 50%;
+        z-index: 1000;
     }
 </style>

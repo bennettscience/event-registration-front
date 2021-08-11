@@ -9,8 +9,7 @@
     export let location;
     export let email;
     export let role;
-
-    export let isModalOpen;
+    export let userId;
 
     let value = role.id;
 
@@ -44,11 +43,10 @@
             }),
         );
         let data = await req.json();
-        console.log(data);
     };
 
     const editUser = () => {
-        d('editUser');
+        d('editUser', { userId: id });
     };
 </script>
 
@@ -66,15 +64,31 @@
         </select>
     </td>
     <td>
-        <button on:click={editUser}>Edit</button>
+        <span role="button" on:click={editUser}>Edit</span>
     </td>
 </tr>
 
 <style>
-    tr:nth-child(even) {
-        background-color: var(--site-gray);
+    span {
+        border: 1px solid var(--site-gray);
+        border-radius: 5px;
+        padding: 10px 30px;
+        transition: all 0.25s ease-in-out;
     }
-
+    span:hover {
+        cursor: pointer;
+        background-color: var(--site-gray);
+        border-color: var(--site-gray);
+    }
+    tr {
+        box-sizing: border-box;
+        border-top: 1px solid transparent;
+        border-bottom: 1px solid transparent;
+        transition: all 0.25s ease-in-out;
+    }
+    tr:hover {
+        border-bottom: 1px solid var(--site-gray);
+    }
     td {
         background-clip: padding-box;
         scroll-snap-align: start;
