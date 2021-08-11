@@ -1,7 +1,7 @@
 <script>
     import { beforeUpdate, createEventDispatcher, onDestroy } from 'svelte';
     import { clock, pin, user } from '../assets/icons.js';
-    import { courseDetail, courses } from '../store.js';
+    import { courseDetail, courseDetailInitial, courses } from '../store.js';
     import RegisterButton from './buttons/RegisterButton.svelte';
     import CancelButton from './buttons/CancelButton.svelte';
     import { formatDate } from '../utils.js';
@@ -13,9 +13,10 @@
     let startDateTime;
     let endTime;
 
+    console.log($courseDetail);
+
     function handleRegister(event) {
         let change = event.detail;
-        console.log(change.courseId);
         index = $courses.findIndex((el) => {
             console.log(el.id === change.courseId);
             return el.id === change.courseId;
@@ -36,15 +37,15 @@
         d('hideSidebar');
     }
 
-    // beforeUpdate(() => {
-    //     if ($courseDetail?.state !== 'available') {
-    //         disabled = true;
-    //     } else {
-    //         disabled = false;
-    //     }
-    // });
+    beforeUpdate(() => {
+        if ($courseDetail?.state !== 'available') {
+            disabled = true;
+        } else {
+            disabled = false;
+        }
+    });
 
-    onDestroy(() => ($courseDetail = {}));
+    onDestroy(() => ($courseDetail = courseDetailInitial));
 
     $: startDateTime = formatDate('starts', $courseDetail.starts);
     $: endTime = formatDate('ends', $courseDetail.ends);
@@ -53,19 +54,20 @@
 <h1>
     {$courseDetail.title}
 </h1>
-<p>
-    {$courseDetail?.description}
-</p>
+<hr />
+
 {#if $courseDetail.available > 0}
     {#if $courseDetail.state === 'registered' && $courseDetail.state !== 'attended'}
         <CancelButton id={$courseDetail.id} on:cancel={handleCancel} />
     {:else if $courseDetail.state === 'available' && $courseDetail.state !== 'attended'}
         <RegisterButton
-            disabled="false"
+            {disabled}
             id={$courseDetail?.id}
             on:register={handleRegister}>Register</RegisterButton
         >
     {/if}
+{:else if $courseDetail.available === 0 && $courseDetail.state === 'registered'}
+    <CancelButton id={$courseDetail.id} on:cancel={handleCancel} />
 {:else}
     <RegisterButton disabled="true" id={$courseDetail?.id}
         >Event Full</RegisterButton
@@ -135,6 +137,7 @@
         font-family: 'Oswald', Helvetica, Arial, sans-serif;
         font-size: 32px;
         margin: 0;
+        text-align: center;
     }
     p {
         font-family: 'Roboto', Helvetica, Arial, sans-serif;

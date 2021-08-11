@@ -1,8 +1,6 @@
 <script>
     import { createEventDispatcher } from 'svelte';
     import RegistrationTable from '../RegistrationTable.svelte';
-    import Counter from '../admin/AdminCounter.svelte';
-    import EditEventSubview from '../EditEventSubview.svelte';
 
     export let courseId;
 

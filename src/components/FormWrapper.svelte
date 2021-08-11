@@ -87,6 +87,11 @@
 </form>
 
 <style>
+    form {
+        display: block;
+        position: relative;
+        margin-bottom: 40px;
+    }
     button {
         position: absolute;
         right: 20px;
