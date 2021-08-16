@@ -1,4 +1,5 @@
 <script>
+    // TODO: Import Quill for WYSIWYG for description text
     import { fly } from 'svelte/transition';
     import { user } from '../store';
     import { handleErrors } from '../utils';
@@ -196,6 +197,7 @@
                             name="title"
                             bind:value={course.title}
                             placeholder="title"
+                            required="true"
                         /></label
                     >
                     <label
@@ -204,6 +206,7 @@
                             name="description"
                             bind:value={course.description}
                             placeholder="description"
+                            required="true"
                         /></label
                     >
                 </fieldset>
@@ -257,6 +260,7 @@
                             name="starts"
                             type="datetime-local"
                             bind:value={course.starts}
+                            required="true"
                         /></label
                     >
                     <label id="ends"
@@ -265,6 +269,7 @@
                             name="ends"
                             type="datetime-local"
                             bind:value={course.ends}
+                            required="true"
                         /></label
                     >
                     <label
@@ -273,6 +278,7 @@
                             name="course_size"
                             bind:value={course.course_size}
                             type="number"
+                            required="true"
                         /></label
                     >
                 </fieldset>
