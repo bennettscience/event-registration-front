@@ -319,13 +319,10 @@
     };
 
     const duplicateEvent = async () => {
-        console.log(resourceId);
         // Get the requested course and store data in hidden fields
         // Only show the start/end fields and title
         let request = handleErrors(await fetch(`/courses/${resourceId}`));
         data = await request.json();
-
-        console.log(data);
 
         fields = [
             {
@@ -388,7 +385,6 @@
     }
 
     const handleSubmit = async (data) => {
-        console.log(data);
         let endpoint = targets[dataTarget].uri;
         let method = targets[dataTarget].method;
         result = 'Submitting change...';
@@ -411,6 +407,7 @@
                 },
             });
             let response = await req.json();
+
             result = `Success!`;
             setTimeout(() => d('success'), 2000);
         } catch (e) {
