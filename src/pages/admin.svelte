@@ -6,7 +6,6 @@
     import EditEventSubview from '../components/EditResourceSubview.svelte';
     import Modal from '../components/ModalView.svelte';
 
-    export let isAuthenticated;
     let dataTarget = '';
     let sidebarVisible = false;
     let isModalOpen = false;
