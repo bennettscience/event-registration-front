@@ -73,7 +73,7 @@
         {#if courseId !== null}
             <EditEventSubview
                 on:success={() => (sidebarVisible = false)}
-                {courseId}
+                resourceId={courseId}
                 bind:dataTarget
             />
         {/if}
