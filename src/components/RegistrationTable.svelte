@@ -16,8 +16,6 @@
             .filter((el) => !el.attended)
             .map((obj) => obj.user.id);
 
-        console.log(userIds);
-
         let req = await fetch(`/courses/${courseId}/registrations`, {
             method: 'PUT',
             headers: {
@@ -26,7 +24,6 @@
             body: JSON.stringify({ user_ids: userIds }),
         });
         let resp = await req.json();
-        registrations = resp;
         registrations = registrations;
     };
 </script>
@@ -56,7 +53,9 @@
             <tr>
                 <td />
                 <td />
-                <td><span role="button">Email Attendees</span></td>
+                <td>
+                    <!-- <span role="button">Email Attendees</span> -->
+                </td>
                 <td
                     ><span role="button" on:click={updateAllAttended}
                         >Mark All Attended</span
