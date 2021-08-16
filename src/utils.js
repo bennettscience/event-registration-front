@@ -1,6 +1,6 @@
 export function handleErrors(response) {
     if(!response.ok) {
-        throw Error(response.data)
+        throw Error(response.messages)
     }
     return response;
 }
