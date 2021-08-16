@@ -51,7 +51,7 @@
 </script>
 
 <tr data-id={id}>
-    <td>{name}</td>
+    <td>{name.split(' ').reverse().splice(0, 2).join(', ')}</td>
     <td>Coming soon!</td>
     <td>{email}</td>
     <td>
