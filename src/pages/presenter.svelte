@@ -16,7 +16,11 @@
     let courses;
 
     const showRegistered = (e) => {
-        registrations = e.detail.registrations;
+        registrations = e.detail.registrations.sort((reg1, reg2) =>
+            reg1.user.name.split(' ')[1] > reg2.user.name.split(' ')[1]
+                ? 1
+                : -1,
+        );
         courseId = e.detail.id;
         currentEvent = e.detail.title;
         result = e.detail;
@@ -37,6 +41,10 @@
             el['state'] = 'registered';
             return el;
         });
+
+        courses = courses.sort((course1, course2) =>
+            course1.starts > course2.starts ? 1 : -1,
+        );
 
         return courses;
     }

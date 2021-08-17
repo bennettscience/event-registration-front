@@ -34,7 +34,11 @@
         let req = await fetch(`/courses/${value}`);
         let data = await req.json();
 
-        registrations = data.registrations;
+        registrations = data.registrations.sort((reg1, reg2) =>
+            reg1.user.name.split(' ')[1] > reg2.user.name.split(' ')[1]
+                ? 1
+                : -1,
+        );
         courseId = data.id;
         result = data;
         // rate = getRate(registrations);
