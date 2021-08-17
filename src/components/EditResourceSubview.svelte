@@ -114,18 +114,12 @@
                 } else if (key === 'starts' || key === 'ends') {
                     field = {
                         name: key,
+                        label: key,
                         id: key,
                         type: 'DateTime',
-                        value: data.course[key],
-                        datetime: data.course[key],
+                        value: new Date(data.course[key]).toISOString(),
+                        datetime: new Date(data.course[key]).toISOString(),
                     };
-                    if (key === 'starts') {
-                        field.shift = false;
-                        field.label = 'Starts';
-                    } else {
-                        field.shift = false;
-                        field.label = 'Ends';
-                    }
                 } else if (key === 'course_size') {
                     field = {
                         name: 'course_size',
