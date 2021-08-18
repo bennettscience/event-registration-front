@@ -1,7 +1,15 @@
 <script>
+    import { user } from '../store';
     import AttendeeRow from './AttendeeRow.svelte';
     export let courseId;
     export let registrations;
+
+    const emailAllUsers = async () => {
+        let emails = registrations.map((el) => el.user.email);
+        console.log(emails);
+        window.location.href = `mailto:${$user.email}?bcc=${emails.join(',')}`;
+        return false;
+    };
 
     const userAttended = (e) => {
         let registration = registrations.find(
@@ -54,7 +62,9 @@
                 <td />
                 <td />
                 <td>
-                    <!-- <span role="button">Email Attendees</span> -->
+                    <span role="button" on:click={emailAllUsers}
+                        >Email Attendees</span
+                    >
                 </td>
                 <td
                     ><span role="button" on:click={updateAllAttended}
