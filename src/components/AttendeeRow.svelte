@@ -23,7 +23,7 @@
 </script>
 
 <tr data-id={user.id} on:click={updateAttended}>
-    <td>{user.name}</td>
+    <td>{user.name.split(' ').reverse().splice(0, 2).join(', ')}</td>
     <td>{user.location?.name}</td>
     <td>{user.email}</td>
     <td
