@@ -46,7 +46,6 @@
     // TODO: Implement Observer role views, permissions.
 
     const getSession = async () => {
-        console.log(width);
         try {
             let req = await fetch('/getsession', {
                 credentials: 'same-origin',
@@ -65,6 +64,10 @@
         isAuthenticated = isAuthenticated;
     };
 </script>
+
+<svelte:head>
+    <link href="//cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet" />
+</svelte:head>
 
 <svelte:window bind:innerWidth={width} />
 <main>

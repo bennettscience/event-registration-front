@@ -56,7 +56,7 @@
             {/if}
         </span>
         <p>
-            {description}
+            {@html description}
         </p>
     </div>
 </article>
