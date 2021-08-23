@@ -5,7 +5,7 @@
     // export let id;
     export let name;
 
-    let today = new Date(datetime);
+    let today = new Date(value);
 
     function shiftISOTime(datetime) {
         let timeZone = today.getTimezoneOffset() * 60 * 1000;
