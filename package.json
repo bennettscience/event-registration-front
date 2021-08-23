@@ -19,8 +19,8 @@
   },
   "dependencies": {
     "page": "^1.11.6",
+    "quill": "^1.3.7",
     "sirv-cli": "^1.0.0",
-    "svelte-quill": "^1.2.0",
     "svelte-simple-datatables": "^0.1.25"
   }
 }
