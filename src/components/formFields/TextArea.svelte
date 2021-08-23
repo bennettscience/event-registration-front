@@ -21,9 +21,7 @@
     class="editor"
     use:quill={options}
     on:text-change={(e) => {
-        console.log(e.detail);
         value = e.detail.html;
-        console.log(value);
     }}
     {placeholder}
 />
