@@ -3,7 +3,7 @@
     // https://www.npmjs.com/package/svelte-quill
     // https://svelte.dev/repl/0cc84ebc0b114dd7ab5b20b87bbee486?version=3.19.1
     import { onMount, createEventDispatcher } from 'svelte';
-    import quill from '../../quill';
+    import jodit from '../../jodit.js';
 
     const dispatch = createEventDispatcher();
 
@@ -16,19 +16,26 @@
     let options = { value: value };
 </script>
 
-<b>{label}</b>
-<div
-    class="editor"
-    use:quill={options}
-    on:text-change={(e) => {
-        value = e.detail.html;
-    }}
-    {placeholder}
-/>
+<label
+    ><b>{label}</b>
+    <textarea
+        use:jodit={options}
+        on:text-change={(e) => {
+            value = e.detail.text;
+        }}
+        {placeholder}
+    />
+</label>
+
+<svelte:head>
+    <link
+        rel="stylesheet"
+        href="//cdnjs.cloudflare.com/ajax/libs/jodit/3.4.25/jodit.min.css"
+    />
+</svelte:head>
 
 <style>
-    .editor {
-        width: 100%;
-        margin-bottom: 10px 0;
+    :global(.jodit-workplace > div > p) {
+        margin: 0;
     }
 </style>
