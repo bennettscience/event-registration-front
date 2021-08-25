@@ -22,6 +22,12 @@
 
     let day = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(starts);
 
+    const handleKeypress = (e) => {
+        if (e.key === 'Enter') {
+            handleClick();
+        }
+    };
+
     function handleClick() {
         courseDetail.set({
             id: id,
@@ -39,7 +45,13 @@
     }
 </script>
 
-<article {id} class="course" on:click={handleClick}>
+<article
+    {id}
+    class="course"
+    on:click={handleClick}
+    on:keypress|preventDefault={handleKeypress}
+    tabindex="0"
+>
     <div class="course-calendar">
         <Calendar>
             <span slot="month">{mo}</span>

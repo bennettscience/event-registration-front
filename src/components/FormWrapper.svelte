@@ -84,7 +84,7 @@
             />
         {/if}
     {/each}
-    <button type="submit">Submit</button>
+    <button tabindex="0" type="submit">Submit</button>
 </form>
 
 <style>
@@ -93,11 +93,11 @@
         position: relative;
         margin-bottom: 40px;
     }
-    button {
+    :global(button[type='submit']) {
         position: absolute;
         right: 20px;
         padding: 10px 30px;
-        border: 1px solid var(--accent-blue);
+        border: 3px solid var(--accent-blue);
         background-color: var(--accent-blue);
         border-radius: 5px;
         transition: all 0.25s ease-in-out;
@@ -108,5 +108,8 @@
         cursor: pointer;
         background-color: var(--text-white);
         color: var(--accent-blue);
+    }
+    :global(button[type='submit']:focus) {
+        border-color: var(--site-dark);
     }
 </style>

@@ -30,7 +30,14 @@
     };
 </script>
 
-<section class="main-container">
+<section
+    on:keydown={(e) => {
+        if (e.key === 'Escape') {
+            sidebarVisible = false;
+        }
+    }}
+    class="main-container"
+>
     {#if $user.role.id !== 1}
         <p>
             Sorry, you don't have the right permissions to access this page. If

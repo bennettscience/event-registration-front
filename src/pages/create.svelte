@@ -8,6 +8,7 @@
     import { locationFields } from '../assets/createLocationFields';
     import { eventFields } from '../assets/createEventFields';
     import { presenter } from '../assets/icons';
+    import TextArea from '../components/formFields/TextArea.svelte';
 
     // Form fields
     let fields; // generic variable to assign fields dynamically
@@ -152,6 +153,8 @@
         course.starts = new Date(course.starts).getTime() / 1000;
         course.ends = new Date(course.ends).getTime() / 1000;
 
+        console.log(course);
+
         let req = handleErrors(
             await fetch(`/courses`, {
                 method: 'POST',
@@ -200,15 +203,13 @@
                             required="true"
                         /></label
                     >
-                    <label
-                        ><b>Description</b>
-                        <textarea
-                            name="description"
-                            bind:value={course.description}
-                            placeholder="description"
-                            required="true"
-                        /></label
-                    >
+                    <TextArea
+                        label="Description"
+                        name="description"
+                        bind:value={course.description}
+                        placeholder="Event description"
+                        required="true"
+                    />
                 </fieldset>
                 <fieldset class="details">
                     <legend><h1>Event Details</h1></legend>
@@ -282,7 +283,7 @@
                         /></label
                     >
                 </fieldset>
-                <button type="submit">Submit</button>
+                <button tabindex="0" type="submit">Submit</button>
             </form>
         {/await}
     {:else}
@@ -343,7 +344,7 @@
     }
     :global(input, textarea) {
         box-sizing: border-box;
-        line-height: 2;
+        line-height: 1.2;
         border: 1px solid transparent;
         border-radius: 0;
         border-bottom: 3px solid var(--site-gray);
@@ -391,11 +392,11 @@
     select {
         width: 100%;
     }
-    button {
+    /* button {
         position: absolute;
         right: 20px;
         padding: 15px 40px;
-        border: 1px solid var(--accent-blue);
+        border: 3px solid var(--accent-blue);
         background-color: var(--accent-blue);
         border-radius: 5px;
         transition: all 0.25s ease-in-out;
@@ -406,7 +407,7 @@
         cursor: pointer;
         background-color: var(--text-white);
         color: var(--accent-blue);
-    }
+    } */
     :global(#close) {
         vertical-align: middle;
     }

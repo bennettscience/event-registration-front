@@ -62,13 +62,27 @@
                 <td />
                 <td />
                 <td>
-                    <span role="button" on:click={emailAllUsers}
-                        >Email Attendees</span
+                    <span
+                        tabindex="0"
+                        role="button"
+                        on:click={emailAllUsers}
+                        on:keypress={(e) => {
+                            if (e.key === 'Enter') {
+                                emailAllUsers();
+                            }
+                        }}>Email Attendees</span
                     >
                 </td>
                 <td
-                    ><span role="button" on:click={updateAllAttended}
-                        >Mark All Attended</span
+                    ><span
+                        tabindex="0"
+                        role="button"
+                        on:click={updateAllAttended}
+                        on:keypress={(e) => {
+                            if (e.key === 'Enter') {
+                                updateAllAttended();
+                            }
+                        }}>Mark All Attended</span
                     ></td
                 >
             </tr>

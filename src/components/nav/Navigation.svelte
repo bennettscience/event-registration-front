@@ -69,13 +69,13 @@
             href: '/people',
             icon: 'users',
         },
-        { item: 'logout', label: 'Logout', href: '/logout', icon: 'logout' },
         {
             item: 'create',
             label: 'Create Event',
             href: '/create',
             icon: 'create',
         },
+        { item: 'logout', label: 'Logout', href: '/logout', icon: 'logout' },
     ];
 
     const logout = () => {

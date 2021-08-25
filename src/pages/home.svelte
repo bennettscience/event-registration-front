@@ -54,7 +54,14 @@
     };
 </script>
 
-<section class="main-container">
+<section
+    on:keydown={(e) => {
+        if (e.key === 'Escape') {
+            sidebarVisible = false;
+        }
+    }}
+    class="main-container"
+>
     {#await $courses then courses}
         {#each courses as course}
             <Course

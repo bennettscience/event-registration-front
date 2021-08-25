@@ -66,7 +66,7 @@
         {#await getCourses()}
             <p>Loading...</p>
         {:then courses}
-            <select bind:value on:change={handleChange}>
+            <select tabindex="0" bind:value on:change={handleChange}>
                 <option value="" readonly="true" hidden="true" selected
                     >Select an event</option
                 >
@@ -90,27 +90,31 @@
             /> -->
 
             <span
+                tabindex="0"
                 class="form-toggle"
                 role="button"
                 on:click={d('editCourse', { courseId: courseId })}
                 >Edit Details</span
             >
             <span
+                tabindex="0"
                 class="form-toggle"
                 role="button"
                 on:click={d('editPresenters', { courseId: courseId })}
                 >Edit Presenters</span
             >
             <span
+                tabindex="0"
                 class="form-toggle"
                 role="button"
                 on:click={d('editLinks', { courseId: courseId })}
                 >Edit Links</span
             >
-            <span role="button" on:click={changeCourseState}
+            <span tabindex="0" role="button" on:click={changeCourseState}
                 >{#if result.active}Cancel Event{:else}Activate Event{/if}</span
             >
             <span
+                tabindex="0"
                 id="delete"
                 role="button"
                 on:click={d('deleteCourse', { courseId: courseId })}

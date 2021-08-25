@@ -70,6 +70,7 @@
         position: absolute;
         bottom: 0;
         width: 256px;
+        font-weight: 700;
     }
 
     .active {

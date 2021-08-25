@@ -64,7 +64,16 @@
         </select>
     </td>
     <td>
-        <span role="button" on:click={editUser}>Edit</span>
+        <span
+            tabindex="0"
+            role="button"
+            on:click={editUser}
+            on:keypress={(e) => {
+                if (e.key === 'Enter') {
+                    editUser();
+                }
+            }}>Edit</span
+        >
     </td>
 </tr>
 

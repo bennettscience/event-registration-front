@@ -12,7 +12,7 @@
     let registrations = [];
     let courseId = null;
     let result = {};
-    let visible = false;
+    let sidebarVisible = false;
     let courses;
 
     const showRegistered = (e) => {
@@ -69,7 +69,14 @@
     $: courses;
 </script>
 
-<section class="main-container">
+<section
+    on:keydown={(e) => {
+        if (e.key === 'Escape') {
+            sidebarVisible = false;
+        }
+    }}
+    class="main-container"
+>
     {#if $user.role.id !== 2}
         <p>
             Sorry, you don't have the right permissions to access this page. If
@@ -94,38 +101,43 @@
             <h2>{currentEvent}</h2>
             {#if courseId !== null}
                 <span
+                    tabindex="0"
                     class="form-toggle"
                     role="button"
                     on:click={() => {
-                        visible = true;
+                        sidebarVisible = true;
                         dataTarget = 'duplicate';
                     }}>Duplicate Event</span
                 >
                 <span
+                    tabindex="0"
                     class="form-toggle"
                     role="button"
                     on:click={() => {
-                        visible = true;
+                        sidebarVisible = true;
                         dataTarget = 'course';
                     }}>Edit Event</span
                 >
                 <span
+                    tabindex="0"
                     class="form-toggle"
                     role="button"
                     on:click={() => {
-                        visible = true;
+                        sidebarVisible = true;
                         dataTarget = 'presenters';
                     }}>Edit Presenters</span
                 >
                 <span
+                    tabindex="0"
                     class="form-toggle"
                     role="button"
                     on:click={() => {
-                        visible = true;
+                        sidebarVisible = true;
                         dataTarget = 'links';
                     }}>Edit Links</span
                 >
                 <span
+                    tabindex="0"
                     class="form-toggle"
                     class:cancelled={result.active}
                     role="button"
@@ -139,18 +151,18 @@
             <RegistrationTable {registrations} bind:courseId />
         </section>
 
-        {#if visible}
+        {#if sidebarVisible}
             <section
                 class="course-detail"
                 transition:fly={{ x: 200, duration: 500 }}
             >
-                <p id="close" on:click={() => (visible = false)}>
+                <p id="close" on:click={() => (sidebarVisible = false)}>
                     <span>&times</span>Cancel
                 </p>
                 {#if courseId !== null}
                     <EditEventSubview
                         on:success={async () => {
-                            visible = false;
+                            sidebarVisible = false;
                             courses = await getCourses();
                         }}
                         resourceId={courseId}

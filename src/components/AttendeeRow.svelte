@@ -27,6 +27,12 @@
     <td>{user.location?.name}</td>
     <td>{user.email}</td>
     <td
+        tabindex="0"
+        on:keypress={(e) => {
+            if (e.key === 'Enter') {
+                updateAttended();
+            }
+        }}
         >{#if attended}
             <svg
                 fill="none"

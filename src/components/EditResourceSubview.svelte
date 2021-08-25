@@ -411,7 +411,7 @@
 </script>
 
 <ul>
-    {#if links.length > 0}
+    {#if links.length > 0 && !Object.entries($user).length === 0}
         {#each links as link}
             <li><a href={link.uri}>{link.name}</a></li>
         {/each}

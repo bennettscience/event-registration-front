@@ -21,7 +21,15 @@
                     d('getRegistered', row);
                 }}
             >
-                <td class="selector">{row.title}</td>
+                <td
+                    class="selector"
+                    tabindex="0"
+                    on:keypress={(e) => {
+                        if (e.key === 'Enter') {
+                            d('getRegistered', row);
+                        }
+                    }}>{row.title}</td
+                >
                 <td>{formatDate('starts', row.starts)}</td>
                 <td>{row.course_size}</td>
                 <td>{row.registrations.length}</td>

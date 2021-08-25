@@ -66,7 +66,10 @@
 </script>
 
 <svelte:head>
-    <link href="//cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet" />
+    <link
+        rel="stylesheet"
+        href="//cdnjs.cloudflare.com/ajax/libs/jodit/3.4.25/jodit.min.css"
+    />
 </svelte:head>
 
 <svelte:window bind:innerWidth={width} />
@@ -87,12 +90,20 @@
         src: url('/fonts/Oswald-VariableFont_wght.ttf') format('truetype');
     }
     @font-face {
-        font-family: 'Roboto';
+        font-family: 'Roboto Light';
         src: url('/fonts/Roboto-Light.ttf') format('truetype');
+    }
+    @font-face {
+        font-family: 'Roboto';
+        src: url('/fonts/Roboto-Regular.ttf') format('truetype');
     }
     @font-face {
         font-family: 'Roboto Bold';
         src: url('/fonts/Roboto-Bold.ttf') format('truetype');
+    }
+    @font-face {
+        font-family: 'Roboto Italic';
+        src: url('/fonts/Roboto-Italic.ttf') format('truetype');
     }
 
     :root {
@@ -129,6 +140,14 @@
     }
     :global(p) {
         font-family: 'Roboto';
+    }
+    :global(b),
+    :global(strong) {
+        font-family: 'Roboto Bold';
+    }
+    :global(i),
+    :global(em) {
+        font-family: 'Roboto Italic';
     }
     main {
         padding: 1em;
