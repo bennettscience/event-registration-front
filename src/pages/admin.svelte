@@ -5,10 +5,12 @@
     import CourseData from '../components/admin/CourseData.svelte';
     import EditEventSubview from '../components/EditResourceSubview.svelte';
     import Modal from '../components/ModalView.svelte';
+    import LogTableWrap from '../components/admin/LogTableWrap.svelte';
 
     let dataTarget = '';
     let sidebarVisible = false;
     let isModalOpen = false;
+    let isLogTableOpen = false;
     let courseId;
 
     let modalText = {
@@ -68,6 +70,7 @@
                 (sidebarVisible = true), (dataTarget = 'links');
             }}
             on:deleteCourse={() => (isModalOpen = true)}
+            on:getLogs={() => (isLogTableOpen = true)}
         />
     {/if}
 </section>
@@ -92,6 +95,9 @@
         onSubmit={handleDelete}
         bind:isModalOpen
     />
+{/if}
+{#if isLogTableOpen}
+    <LogTableWrap bind:isLogTableOpen {courseId} />
 {/if}
 
 <style>
