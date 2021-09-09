@@ -8,6 +8,11 @@ export function handleErrors(response) {
 export function formatDate(target, date) {
     
     const formats = {
+        dateOnly: {
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric'
+        },
         starts: {
             year: 'numeric',
             month: 'long',
