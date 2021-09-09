@@ -1,5 +1,6 @@
 <script>
     import { createEventDispatcher } from 'svelte';
+    import { formatDate } from '../../utils.js';
     import RegistrationTable from '../RegistrationTable.svelte';
 
     export let courseId;
@@ -19,7 +20,14 @@
         let req = await fetch('/courses');
         let data = await req.json();
 
-        options = data.map(({ id, title }) => ({ id, title }));
+        options = data.map(({ id, title, starts }) => {
+            starts = formatDate('dateOnly', starts);
+            return {
+                id: id,
+                title: title,
+                starts: starts,
+            };
+        });
 
         return options;
     }
@@ -71,7 +79,9 @@
                     >Select an event</option
                 >
                 {#each courses as course}
-                    <option value={course.id}>{course.title}</option>
+                    <option value={course.id}
+                        >{course.starts} - {course.title}</option
+                    >
                 {/each}
             </select>
         {:catch}
@@ -109,6 +119,13 @@
                 role="button"
                 on:click={d('editLinks', { courseId: courseId })}
                 >Edit Links</span
+            >
+            <span
+                tabindex="0"
+                id="logs"
+                role="button"
+                on:click={d('getLogs', { courseId: courseId })}
+                >View Event Logs</span
             >
             <span tabindex="0" role="button" on:click={changeCourseState}
                 >{#if result.active}Cancel Event{:else}Activate Event{/if}</span
