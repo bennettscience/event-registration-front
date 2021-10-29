@@ -6,10 +6,8 @@
 
     export let name;
     export let id;
-    export let location;
     export let email;
     export let role;
-    export let userId;
 
     let value = role.id;
 
