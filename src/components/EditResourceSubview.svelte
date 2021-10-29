@@ -375,7 +375,10 @@
     } else if (dataTarget === 'duplicate') {
         duplicateEvent();
     } else {
-        console.log(`That's not allowed.`);
+        d('handleToast', {
+            isError: true,
+            toastBody: 'Action not allowed.',
+        });
     }
 
     const handleSubmit = async (data) => {
@@ -405,7 +408,10 @@
             result = `Success!`;
             setTimeout(() => d('success'), 2000);
         } catch (e) {
-            console.log(e);
+            d('handleToast', {
+                isError: true,
+                toastBody: e,
+            });
         }
     };
 </script>
