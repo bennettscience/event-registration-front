@@ -4,9 +4,8 @@
     export let registrations;
 
     let eventId;
-
     let registrationIds = registrations.map((el) => el.course.id);
-    console.log(registrationIds);
+
     let available = events.filter(
         (event) => !registrationIds.includes(event.id),
     );
@@ -17,9 +16,7 @@
         });
         if (resp.ok) {
             let result = await resp.json();
-            console.log(result.data);
             registrations = [...registrations, result.data];
-            console.log(registrations);
         }
     };
 </script>

@@ -6,7 +6,6 @@
 
     const emailAllUsers = async () => {
         let emails = registrations.map((el) => el.user.email);
-        console.log(emails);
         window.location.href = `mailto:${$user.email}?bcc=${emails.join(',')}`;
         return false;
     };

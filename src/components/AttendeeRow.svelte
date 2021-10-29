@@ -8,7 +8,6 @@
     const d = createEventDispatcher();
 
     const updateAttended = async () => {
-        console.log(courseId, user.id);
         let req = await fetch(`/courses/${courseId}/registrations/${user.id}`, {
             method: 'PUT',
             headers: {

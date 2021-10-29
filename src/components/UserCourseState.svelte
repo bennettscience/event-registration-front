@@ -2,8 +2,6 @@
     import { circle, circleCheck } from '../assets/icons.js';
     export let state;
 
-    console.log(state);
-
     let userStates = {
         registered: {
             icon: circle,
