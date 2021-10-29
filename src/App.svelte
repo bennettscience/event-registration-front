@@ -3,7 +3,16 @@
 
     import { onMount } from 'svelte';
     import { fly } from 'svelte/transition';
+    import Toast from './components/Toast.svelte';
     import page from 'page';
+    import * as Sentry from '@sentry/browser';
+    import { Integrations } from '@sentry/tracing';
+
+    // Sentry.init({
+    //     dsn: 'https://c7bbacad63af4dad981e79264ae5c80f@o288929.ingest.sentry.io/5960721',
+    //     integrations: [new Integrations.BrowserTracing()],
+    //     tracesSampleRate: 0.5,
+    // });
 
     import { user } from './store';
 
@@ -21,6 +30,11 @@
 
     // set default component
     let current = Login;
+
+    // set Toast data
+    let showToast = false;
+    let isError = false;
+    let toastBody = '';
 
     // Map routes to page. If a route is hit the current
     // reference is set to the route's component
@@ -59,9 +73,17 @@
                 current = Home;
             }
         } catch (err) {
-            console.log(err);
+            handleToast(err);
         }
         isAuthenticated = isAuthenticated;
+    };
+
+    const handleToast = (data) => {
+        showToast = true;
+        isError = data.detail.isError;
+        toastBody = data.detail.toastBody;
+
+        setTimeout(() => (showToast = false), 5000);
     };
 </script>
 
@@ -75,13 +97,16 @@
 <svelte:window bind:innerWidth={width} />
 <main>
     {#await getSession() then session}
-        <Navigation bind:isAuthenticated />
+        <Navigation bind:isAuthenticated on:handleToast />
         {#if isAuthenticated}
-            <svelte:component this={current} bind:isAuthenticated />
+            <svelte:component this={current} on:handleToast={handleToast} />
         {:else}
-            <Login bind:isAuthenticated />
+            <Login bind:isAuthenticated on:handleToast />
         {/if}
     {/await}
+    {#if showToast}
+        <Toast {isError} {toastBody} />
+    {/if}
 </main>
 
 <style>
@@ -111,6 +136,7 @@
         --site-gray: #c5c6c7;
         --accent-blue: #0098fa;
         --accent-red: #e9164f;
+        --accent-green: #32c192;
         --site-dark: #1f2833;
         --text-white: #f0ecec;
 
