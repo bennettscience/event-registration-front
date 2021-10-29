@@ -27,7 +27,7 @@
             </div>
             <div name="footer" {close}>
                 {#if loading}
-                    <Loader />
+                    <Loader dark="true" />
                 {:else if confirmRequired}
                     <button id="confirm" on:click={handleSubmit}>Confirm</button
                     >
