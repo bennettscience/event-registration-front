@@ -1,5 +1,9 @@
 <script>
+    import { createEventDispatcher } from 'svelte';
     import { user } from '../store';
+
+    const d = createEventDispatcher();
+
     const login = async () => {
         try {
             let req = await fetch('/authorize/google', {
@@ -26,8 +30,11 @@
 
                 $user = data.user;
             }
-        } catch (err) {
-            console.log(err);
+        } catch (e) {
+            d('handleToast', {
+                isError: true,
+                toastBody: e,
+            });
         }
     };
 </script>
