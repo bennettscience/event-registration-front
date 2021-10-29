@@ -6,7 +6,7 @@
 
 <label
     ><b>{label}</b>
-    <input bind:value {placeholder} type="url" />
+    <input bind:value {placeholder} type="url" tabindex="0" />
 </label>
 
 <style>

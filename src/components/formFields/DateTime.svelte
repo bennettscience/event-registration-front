@@ -24,7 +24,7 @@
 
 <label style="grid-area: {name}"
     ><b>{label}</b>
-    <input type="datetime-local" bind:value /></label
+    <input type="datetime-local" bind:value tabinex="0" /></label
 >
 
 <style>
