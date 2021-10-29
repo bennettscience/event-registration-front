@@ -1,5 +1,4 @@
 <script>
-    // TODO: Import Quill for WYSIWYG for description text
     import { fly } from 'svelte/transition';
     import { user } from '../store';
     import { handleErrors } from '../utils';
@@ -47,7 +46,6 @@
         sidebarVisible = true;
         fields = eventFields;
         onSubmit = async (data) => {
-            console.log(data);
             let req = await fetch('/courses/types', {
                 method: 'POST',
                 body: JSON.stringify(data),
@@ -64,6 +62,8 @@
                     () => ((sidebarVisible = false), (result = '')),
                     2000,
                 );
+            } else {
+                result = req;
             }
         };
     };
@@ -106,32 +106,9 @@
                 return await resp.json();
             }),
         ).then((result) => {
-            console.log(result);
             locations = result[0];
             courseTypes = result[1];
-            // users = users;
-
-            // response = {
-            //     locations,
-            //     courseTypes,
-            //     users,
-            // };
         });
-        // console.log(response);
-        // let reqLocations = await fetch('/locations');
-        // let reqCourseTypes = await fetch('/courses/types');
-
-        // if (reqLocations.ok) {
-        //     locations = await reqLocations.json();
-        //     response['locations'] = locations;
-        // }
-
-        // if (reqCourseTypes.ok) {
-        //     courseTypes = await reqCourseTypes.json();
-        //     response['courseTypes'] = courseTypes;
-        // }
-
-        // console.log(response);
 
         return response;
     };
@@ -141,9 +118,7 @@
         isModalOpen = true;
         loading = true;
         // TODO: Add some validation here
-        await createCourse(course)
-            .then((course = {}))
-            .catch((e) => console.log(e));
+        await createCourse(course).then((course = {}));
     };
 
     // TODO: Clear the form after submit.
@@ -152,8 +127,6 @@
         // on the client before submitting.
         course.starts = new Date(course.starts).getTime() / 1000;
         course.ends = new Date(course.ends).getTime() / 1000;
-
-        console.log(course);
 
         let req = handleErrors(
             await fetch(`/courses`, {
@@ -175,6 +148,8 @@
                 modalText = modalInitial;
                 fields = getFormFieldData();
             }, 2000);
+        } else {
+            result = req;
         }
     }
 </script>
@@ -201,6 +176,7 @@
                             bind:value={course.title}
                             placeholder="title"
                             required="true"
+                            tabindex="0"
                         /></label
                     >
                     <TextArea
@@ -224,6 +200,7 @@
                     <label id="type"
                         ><b>Event type</b>
                         <select
+                            tabindex="0"
                             bind:value={course.coursetype_id}
                             name="coursetype_id"
                         >
@@ -232,6 +209,7 @@
                             {/each}
                         </select>
                         <span
+                            tabindex="0"
                             class="new-action-btn"
                             on:click={handleNewEventType}
                             >Add new event type</span
@@ -241,6 +219,7 @@
                     <label id="location"
                         ><b>Event Location</b>
                         <select
+                            tabindex="0"
                             bind:value={course.location_id}
                             name="location_id"
                         >
@@ -251,6 +230,7 @@
                             {/each}
                         </select>
                         <span
+                            tabindex="0"
                             class="new-action-btn"
                             on:click={handleNewLocation}>Add new location</span
                         >
@@ -258,6 +238,7 @@
                     <label id="starts"
                         ><b>Starts</b>
                         <input
+                            tabindex="0"
                             name="starts"
                             type="datetime-local"
                             bind:value={course.starts}
@@ -267,6 +248,7 @@
                     <label id="ends"
                         ><b>Ends</b>
                         <input
+                            tabindex="0"
                             name="ends"
                             type="datetime-local"
                             bind:value={course.ends}
@@ -276,6 +258,7 @@
                     <label
                         ><b>Attendance limit</b>
                         <input
+                            tabindex="0"
                             name="course_size"
                             bind:value={course.course_size}
                             type="number"
@@ -315,7 +298,13 @@
         padding-right: 0;
     }
     :global(form) {
+        display: block;
         position: relative;
+    }
+    form {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
     }
     fieldset {
         margin: 20px;
@@ -364,16 +353,11 @@
         margin: 5px 0;
         width: 100%;
     }
-    textarea {
-        height: 200px;
-    }
-    input[name='title'],
-    textarea[name='description'] {
+    input[name='title'] {
         width: 100%;
     }
     .details #type,
-    #location,
-    #presenter {
+    #location {
         width: 30%;
         flex: 1 0 auto;
         margin-bottom: 25px;
@@ -392,9 +376,9 @@
     select {
         width: 100%;
     }
-    /* button {
-        position: absolute;
-        right: 20px;
+    button[type='submit'] {
+        position: relative;
+        right: 0;
         padding: 15px 40px;
         border: 3px solid var(--accent-blue);
         background-color: var(--accent-blue);
@@ -403,11 +387,14 @@
         font-weight: bold;
         color: var(--text-white);
     }
-    button:hover {
+    button[type='submit']:hover {
         cursor: pointer;
         background-color: var(--text-white);
         color: var(--accent-blue);
-    } */
+    }
+    button[type='submit']:focus {
+        border-color: var(--site-dark);
+    }
     :global(#close) {
         vertical-align: middle;
     }
