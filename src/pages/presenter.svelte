@@ -5,8 +5,6 @@
     import RegistrationTable from '../components/RegistrationTable.svelte';
     import EditEventSubview from '../components/EditResourceSubview.svelte';
 
-    export let isAuthenticated;
-
     let currentEvent = 'Select an event to load registrations';
     let dataTarget;
     let registrations = [];
@@ -36,11 +34,6 @@
     async function getCourses() {
         let req = await fetch(`/users/${$user.id}/presenting`);
         courses = await req.json();
-
-        courses.map((el) => {
-            el['state'] = 'registered';
-            return el;
-        });
 
         courses = courses.sort((course1, course2) =>
             course1.starts > course2.starts ? 1 : -1,
