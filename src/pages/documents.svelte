@@ -1,4 +1,5 @@
 <script>
+    import { createEventDispatcher } from 'svelte';
     import { user } from '../store.js';
     import { formatDate, handleErrors } from '../utils.js';
 
@@ -6,27 +7,36 @@
     let totalRegistrations;
     let total = 0;
 
+    const d = createEventDispatcher();
+
     // Admins can get to documents for a user through the admin console.
 
     const headers = ['Title', 'Start', 'PGPs', 'Print'];
 
     async function getConfirmedEvents() {
         // User ID validation for the request is done on the server for the current signed in user.
-        let req = handleErrors(await fetch(`users/${$user.id}/confirmed`));
-        let data = await req.json();
+        // TODO: Make this a fetchall and filter/map over the array
+        try {
+            let req = handleErrors(await fetch(`users/${$user.id}/confirmed`));
+            let data = await req.json();
 
-        let regs = handleErrors(await fetch(`users/${$user.id}/registrations`));
-        let registrations = await regs.json();
+            let regs = handleErrors(
+                await fetch(`users/${$user.id}/registrations`),
+            );
+            let registrations = await regs.json();
 
-        events = data.map((event) => {
-            event.course.state = 'attended';
-            total += event.course.total;
-            return event;
-        });
+            events = data.map((event) => {
+                event.course.state = 'attended';
+                total += event.course.total;
+                return event;
+            });
 
-        totalRegistrations = registrations.length;
+            totalRegistrations = registrations.length;
 
-        return events;
+            return events;
+        } catch (err) {
+            d('handleToast', err);
+        }
     }
 </script>
 
