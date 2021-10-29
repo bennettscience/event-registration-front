@@ -1,7 +1,12 @@
 <script>
     import { beforeUpdate, createEventDispatcher, onDestroy } from 'svelte';
     import { clock, pin, user } from '../assets/icons.js';
-    import { courseDetail, courseDetailInitial, courses } from '../store.js';
+    import {
+        courseDetail,
+        courseDetailInitial,
+        courses,
+        registrations,
+    } from '../store.js';
     import RegisterButton from './buttons/RegisterButton.svelte';
     import CancelButton from './buttons/CancelButton.svelte';
     import { formatDate } from '../utils.js';
@@ -9,31 +14,66 @@
     const d = createEventDispatcher();
 
     let disabled;
-    let index;
     let startDateTime;
     let endTime;
 
-    console.log($courseDetail);
-
     function handleRegister(event) {
         let change = event.detail;
-        index = $courses.findIndex((el) => {
-            console.log(el.id === change.courseId);
+
+        // Find the course in the store
+        let index = $courses.findIndex((el) => {
             return el.id === change.courseId;
         });
+
+        // Update the course state in the store. This updates the Home view so courses registered
+        // will show the correct badge.
+
+        // TODO: This could probably be moved into some kind of state machine.
         $courses[index].state = 'registered';
+
+        // Reassign the objects to register the changes.
+        $courses = $courses;
         $courseDetail.state = 'registered';
+        $courseDetail = { ...$courseDetail };
+
+        // Append an object to the registrations store until they're queried again via the API.
+        $registrations = [
+            ...$registrations,
+            {
+                attended: false,
+                course: { ...$courses[index] },
+            },
+        ];
+
+        d('handleToast', {
+            toastBody: `Successfully registered for ${$courseDetail.title}.`,
+            isError: false,
+        });
+
         d('hideSidebar');
     }
 
     function handleCancel(event) {
         let change = event.detail;
-        console.log(change);
-        index = $courses.findIndex((el) => {
+        let index = $courses.findIndex((el) => {
             return el.id === change.courseId;
         });
+
+        let updated = $registrations.filter(
+            (reg) => reg.course.id !== change.courseId,
+        );
+
+        $registrations = updated;
+
         $courses[index].state = 'available';
         $courseDetail.state = 'available';
+
+        $courses = $courses;
+
+        d('handleToast', {
+            toastBody: `Successfully cancelled ${$courseDetail.title}.`,
+            isError: false,
+        });
         d('hideSidebar');
     }
 
@@ -60,18 +100,18 @@
     {#if $courseDetail.state === 'registered' && $courseDetail.state !== 'attended'}
         <CancelButton id={$courseDetail.id} on:cancel={handleCancel} />
     {:else if $courseDetail.state === 'available' && $courseDetail.state !== 'attended'}
+        <!-- The register button makes the actual API call to the backend. This event updates the
+             ui depeding on the results of that call. Same case for cancelling course registrations. -->
         <RegisterButton
             {disabled}
             id={$courseDetail?.id}
-            on:register={handleRegister}>Register</RegisterButton
-        >
+            on:register={handleRegister}
+        />
     {/if}
 {:else if $courseDetail.available === 0 && $courseDetail.state === 'registered'}
     <CancelButton id={$courseDetail.id} on:cancel={handleCancel} />
 {:else}
-    <RegisterButton disabled="true" id={$courseDetail?.id}
-        >Event Full</RegisterButton
-    >
+    <RegisterButton {disabled} id={$courseDetail?.id} />
 {/if}
 <hr />
 <time>
@@ -138,9 +178,6 @@
         font-size: 32px;
         margin: 0;
         text-align: center;
-    }
-    p {
-        font-family: 'Roboto', Helvetica, Arial, sans-serif;
     }
     hr {
         width: 70%;
