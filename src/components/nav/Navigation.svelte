@@ -1,5 +1,5 @@
 <script>
-    import { onMount } from 'svelte';
+    import { onMount, createEventDispatcher } from 'svelte';
     import { fly } from 'svelte/transition';
     import MenuItem from './MenuItem.svelte';
     import { user } from '../../store.js';
@@ -7,6 +7,8 @@
     let menu;
     let current = 'home';
     export let isAuthenticated;
+
+    const d = createEventDispatcher();
 
     // Show nav items based on user role
     const permissions = {
@@ -85,8 +87,11 @@
             .then(() => {
                 isAuthenticated = false;
             })
-            .catch((err) => {
-                console.log(err);
+            .catch((e) => {
+                d('handleToast', {
+                    isError: true,
+                    toastBody: e,
+                });
             });
     };
 
