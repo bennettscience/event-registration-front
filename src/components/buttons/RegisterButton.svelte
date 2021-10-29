@@ -2,15 +2,15 @@
     import { user } from '../../store';
     import { createEventDispatcher } from 'svelte';
     import Loader from '../Loader.svelte';
-    export let id;
-    export let disabled = false;
 
-    let show = false;
+    export let id;
+    export let disabled;
+    let showLoader = false;
 
     const d = createEventDispatcher();
 
     async function handleClick() {
-        show = !show;
+        showLoader = !showLoader;
         let req = await fetch(`/courses/${id}/registrations/${$user.id}`, {
             method: 'POST',
         });
@@ -20,15 +20,21 @@
         if (response.message === 'success') {
             d('register', {
                 courseId: id,
-                course: response.data,
             });
         }
-        // $courseDetail.state = 'registered';
-        show = !show;
+        showLoader = !showLoader;
     }
 </script>
 
-<span class:disabled role="button" on:click={handleClick}> <slot /> </span>
+<span class:disabled role="button" on:click={handleClick}>
+    {#if showLoader}
+        <Loader />
+    {:else if disabled}
+        Event full
+    {:else}
+        Register
+    {/if}
+</span>
 
 <style>
     span {

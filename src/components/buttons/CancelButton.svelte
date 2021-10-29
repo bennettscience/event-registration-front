@@ -1,13 +1,15 @@
 <script>
     import { user } from '../../store';
     import { createEventDispatcher } from 'svelte';
+    import Loader from '../Loader.svelte';
 
     export let id;
-    export let disabled;
+    let showLoader = false;
 
     const d = createEventDispatcher();
 
     async function handleCancel() {
+        showLoader = !showLoader;
         let req = await fetch(`/courses/${id}/registrations/${$user.id}`, {
             method: 'DELETE',
         });
@@ -17,10 +19,17 @@
                 courseId: id,
             });
         }
+        showLoader = !showLoader;
     }
 </script>
 
-<span class:disabled role="button" on:click={handleCancel}> Cancel </span>
+<span role="button" on:click={handleCancel}>
+    {#if showLoader}
+        <Loader />
+    {:else}
+        Cancel
+    {/if}
+</span>
 
 <style>
     span {
@@ -42,11 +51,5 @@
 
     span:hover {
         box-shadow: var(--active-shadow);
-    }
-    .disabled {
-        background-color: var(--site-gray);
-    }
-    .disabled:hover {
-        cursor: not-allowed;
     }
 </style>
