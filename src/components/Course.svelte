@@ -6,16 +6,22 @@
 
     const d = createEventDispatcher();
 
-    export let title;
-    export let description;
-    export let starts;
-    export let ends;
-    export let state;
-    export let location;
-    export let available;
-    export let presenters;
-    export let links;
-    export let id;
+    export let course;
+
+    let {
+        title,
+        description,
+        starts,
+        ends,
+        state,
+        location,
+        available,
+        presenters,
+        links,
+        id,
+    } = course;
+
+    $: state = course.state;
 
     // Do some magic on the starts/ends props
     let mo = new Intl.DateTimeFormat('en', { month: 'short' }).format(starts);
