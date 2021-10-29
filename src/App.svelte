@@ -165,6 +165,8 @@
         font-size: 20px;
     }
     :global(p) {
+        margin-block-start: 0;
+        margin-block-end: 0;
         font-family: 'Roboto';
     }
     :global(b),

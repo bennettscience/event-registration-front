@@ -106,7 +106,7 @@
         flex-wrap: wrap;
         justify-content: space-between;
         width: 100%;
-        padding: 0 15px 0 0;
+        padding: 20px 15px 20px 0;
     }
     p {
         display: block;
