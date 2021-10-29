@@ -3,7 +3,14 @@
     import { fly } from 'svelte/transition';
     import Course from '../components/Course.svelte';
     import CourseDetails from '../components/CourseDetails.svelte';
-    import { courses, courseDetail, courseDetailInitial } from '../store.js';
+    import {
+        courses,
+        courseDetail,
+        courseDetailInitial,
+        registrations,
+        user,
+    } from '../store.js';
+    import { handleErrors } from '../utils.js';
 
     const d = createEventDispatcher();
 
@@ -14,43 +21,44 @@
         getCourses();
     });
 
-    const getUser = async () => {
-        let req = await fetch('/getsession');
-        let data = await req.json();
-
-        return data;
-    };
-
-    // TODO: Make this reactive.
     const getCourses = async () => {
-        let user = await getUser();
-        const req = await fetch('/courses');
-        const userReq = await fetch(`/users/${user.user.id}/registrations`);
-        let registrations = await userReq.json();
+        const urls = [`/courses`, `/users/${$user.id}/registrations`];
+        let data = await Promise.all(
+            urls.map(async (url) => {
+                const resp = handleErrors(await fetch(url));
+                return await resp.json();
+            }),
+        );
 
-        if (req.ok) {
-            let data = await req.json();
-            if (data.length > 0) {
-                $courses = data;
-                $courses.map((course) => {
-                    let reg = registrations.find((el) => {
-                        return el.course.id === course.id;
-                    });
+        $courses = data[0];
+        $registrations = data[1];
 
-                    if (reg && reg.attended) {
-                        course['state'] = 'attended';
-                    } else if (reg) {
-                        course['state'] = 'registered';
-                    } else {
-                        course['state'] = 'available';
-                    }
-
-                    return course;
-                });
-                console.log($courses);
+        // Add a state icon to each course;
+        $courses.map((course) => {
+            let reg = $registrations.find((el) => {
+                return el.course.id === course.id;
+            });
+            try {
+                if (reg && reg.attended) {
+                    course['state'] = 'attended';
+                } else if (reg) {
+                    course['state'] = 'registered';
+                } else {
+                    course['state'] = 'available';
+                }
+                return course;
+            } catch (e) {
+                d('handleToast', e);
             }
-        }
-        return $courses;
+        });
+
+        $registrations.map((course) => {
+            if (course.attended) {
+                course.course['state'] = 'attended';
+            } else {
+                course.course['state'] = 'registered';
+            }
+        });
     };
 </script>
 
@@ -62,16 +70,16 @@
     }}
     class="main-container"
 >
-    {#await $courses then courses}
-        {#each courses as course}
-            <Course
-                {...course}
-                on:showSidebar={() => {
-                    sidebarVisible = !sidebarVisible;
-                }}
-            />
-        {/each}
-    {/await}
+    <!-- {#await $courses then courses} -->
+    {#each $courses as course (course.id)}
+        <Course
+            {course}
+            on:showSidebar={() => {
+                sidebarVisible = !sidebarVisible;
+            }}
+        />
+    {/each}
+    <!-- {/await} -->
 </section>
 {#if sidebarVisible}
     <section class="course-detail" transition:fly={{ x: 200, duration: 500 }}>
@@ -85,6 +93,7 @@
             <span>&times</span>Close
         </p>
         <CourseDetails
+            on:handleToast
             on:hideSidebar={() => {
                 sidebarVisible = !sidebarVisible;
                 $courseDetail = courseDetailInitial;
