@@ -10,6 +10,7 @@
     const d = createEventDispatcher();
 
     async function handleClick() {
+        disabled = true;
         showLoader = !showLoader;
         let req = await fetch(`/courses/${id}/registrations/${$user.id}`, {
             method: 'POST',

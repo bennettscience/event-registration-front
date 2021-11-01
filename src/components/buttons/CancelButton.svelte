@@ -9,6 +9,7 @@
     const d = createEventDispatcher();
 
     async function handleCancel() {
+        disabled = true;
         showLoader = !showLoader;
         let req = await fetch(`/courses/${id}/registrations/${$user.id}`, {
             method: 'DELETE',
