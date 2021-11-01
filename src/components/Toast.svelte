@@ -22,7 +22,7 @@
     .toast {
         background-color: var(--accent-green);
         color: var(--text-white);
-        line-height: 1;
+        line-height: 2.5;
         position: fixed;
         bottom: 0;
         right: 0;
