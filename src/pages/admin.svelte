@@ -81,6 +81,7 @@
         </p>
         {#if courseId !== null}
             <EditEventSubview
+                on:handleToast
                 on:success={() => (sidebarVisible = false)}
                 resourceId={courseId}
                 bind:dataTarget

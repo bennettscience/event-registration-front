@@ -44,6 +44,21 @@
         },
     };
 
+    const deleteLink = async (linkId) => {
+        let request = handleErrors(
+            await fetch(`/courses/${resourceId}/links/${linkId}`, {
+                method: 'DELETE',
+            }),
+        );
+        let response = await request.json();
+        links = response.links;
+
+        d('handleToast', {
+            toastBody: response.message,
+            isError: false,
+        });
+    };
+
     // Course changes
     // Event types and locations are dynamic, so they need to be loaded when the component is mounted.
     const editCourse = async () => {
@@ -238,6 +253,7 @@
 
         let allowed = ['id', 'name'];
         links = data.links;
+        console.log(links);
 
         linktypes = data.linkTypes.map((item) =>
             allowed.reduce((idx, current) => {
@@ -384,7 +400,6 @@
     const handleSubmit = async (data) => {
         let endpoint = targets[dataTarget].uri;
         let method = targets[dataTarget].method;
-        result = 'Submitting change...';
 
         if (dataTarget === 'course' || dataTarget === 'duplicate') {
             data.starts = convertToPythonTimestamp(data.starts);
@@ -405,7 +420,10 @@
             });
             let response = await req.json();
 
-            result = `Success!`;
+            d('handleToast', {
+                isError: false,
+                toastBody: response.message,
+            });
             setTimeout(() => d('success'), 2000);
         } catch (e) {
             d('handleToast', {
@@ -419,7 +437,9 @@
 <ul>
     {#if links.length > 0 && !Object.entries($user).length === 0}
         {#each links as link}
-            <li><a href={link.uri}>{link.name}</a></li>
+            <li>
+                <a href={link.uri}>{link.name}</a> -
+            </li>
         {/each}
     {/if}
     {#if presenters.length > 0}
@@ -439,6 +459,20 @@
     {/if}
     <Form {fields} onSubmit={(body) => handleSubmit(body)} />
 {/await}
+
+{#if dataTarget === 'links'}
+    <ul id="links-list">
+        {#if links.length > 0}
+            {#each links as link}
+                <li>
+                    <button on:click={deleteLink(link.id)}>×</button>
+                    <a href={link.uri}>{link.name}</a>
+                </li>
+            {/each}
+        {/if}
+    </ul>
+{/if}
+
 {#if data?.registrations}
     <UserEventDetail
         events={data.events}
@@ -453,5 +487,27 @@
 <style>
     #result {
         position: relative;
+    }
+    #links-list {
+        list-style-type: none;
+        padding-left: 0;
+    }
+    #links-list > li {
+        display: flex;
+        flex-direction: row;
+        align-content: center;
+        align-items: center;
+    }
+    #links-list > li > button {
+        background-color: var(--accent-red);
+        border: none;
+        color: var(--text-white);
+        font-weight: bold;
+        /* font-size: 12px; */
+        margin-right: 25px;
+        margin-bottom: 0;
+    }
+    #links-list > li > button:hover {
+        cursor: pointer;
     }
 </style>

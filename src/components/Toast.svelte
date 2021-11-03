@@ -31,5 +31,6 @@
         border: 1px solid var(--site-gray);
         border-radius: 5px;
         padding: 3px 25px;
+        z-index: 1000; /* Put on top of everything */
     }
 </style>
