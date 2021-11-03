@@ -89,6 +89,7 @@
 
     $: startDateTime = formatDate('starts', $courseDetail.starts);
     $: endTime = formatDate('ends', $courseDetail.ends);
+    $: links = links;
 </script>
 
 <h1>
@@ -155,7 +156,7 @@
     </ul>
 </div>
 
-{#if $courseDetail?.links.length > 0}
+{#if $courseDetail.state !== 'available' && $courseDetail?.links.length > 0}
     <div>
         <h2>Links</h2>
         <ul>
