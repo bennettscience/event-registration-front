@@ -4,6 +4,7 @@
     import Loader from '../Loader.svelte';
 
     export let id;
+    let disabled = false;
     let showLoader = false;
 
     const d = createEventDispatcher();
