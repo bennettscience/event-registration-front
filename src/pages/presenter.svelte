@@ -154,6 +154,7 @@
                 </p>
                 {#if courseId !== null}
                     <EditEventSubview
+                        on:handleToast
                         on:success={async () => {
                             sidebarVisible = false;
                             courses = await getCourses();
