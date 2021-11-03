@@ -71,14 +71,18 @@
     class="main-container"
 >
     <!-- {#await $courses then courses} -->
-    {#each $courses as course (course.id)}
-        <Course
-            {course}
-            on:showSidebar={() => {
-                sidebarVisible = !sidebarVisible;
-            }}
-        />
-    {/each}
+    {#if $courses.length === 0}
+        <p>Loading...</p>
+    {:else}
+        {#each $courses as course (course.id)}
+            <Course
+                {course}
+                on:showSidebar={() => {
+                    sidebarVisible = !sidebarVisible;
+                }}
+            />
+        {/each}
+    {/if}
     <!-- {/await} -->
 </section>
 {#if sidebarVisible}
