@@ -1,14 +1,13 @@
 <script>
     let w;
     let h;
-    let size = 60;
 </script>
 
 <!-- <input type=range bind:value={size}> -->
 
 <div class="calendar" bind:clientHeight={h} bind:clientWidth={w}>
-    <div class="month">
-        <slot name="month" />
+    <div class="day">
+        <slot name="day" />
     </div>
     <div class="date">
         <slot name="date" />
@@ -27,21 +26,20 @@
         background-color: var(--accent-blue);
         color: var(--text-white);
         border-radius: 5px 0 0 5px;
-        width: 100px;
+        width: 100%;
         border: 3px solid var(--accent-blue);
     }
-    .month {
+    .day {
         width: 100%;
         text-align: center;
-        text-transform: uppercase;
-        font-size: 32px;
+        font-size: 24px;
         font-weight: 300;
         margin-bottom: 0;
         transform: scale(0.85, 1.2);
     }
     .date {
         text-align: center;
-        font-size: 60px;
+        font-size: 36px;
         font-weight: 800;
         padding: 0;
     }
@@ -58,7 +56,7 @@
             border-top-left-radius: 5px;
             border-top-right-radius: 5px;
         }
-        .month {
+        .day {
             width: auto;
             font-size: 24px;
         }

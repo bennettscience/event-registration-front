@@ -24,9 +24,14 @@
     $: state = course.state;
 
     // Do some magic on the starts/ends props
-    let mo = new Intl.DateTimeFormat('en', { month: 'short' }).format(starts);
+    let day = new Intl.DateTimeFormat('en', { weekday: 'short' }).format(
+        starts,
+    );
 
-    let day = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(starts);
+    let date = new Intl.DateTimeFormat('en', {
+        month: 'short',
+        day: '2-digit',
+    }).format(starts);
 
     const handleKeypress = (e) => {
         if (e.key === 'Enter') {
@@ -60,8 +65,8 @@
 >
     <div class="course-calendar">
         <Calendar>
-            <span slot="month">{mo}</span>
-            <span slot="date">{day}</span>
+            <span slot="day">{day}</span>
+            <span slot="date">{date.toUpperCase()}</span>
         </Calendar>
     </div>
     <div class="course-details">
@@ -84,7 +89,7 @@
         display: grid;
         gap: 12px;
         grid-template-areas: 'calendar details';
-        grid-template-columns: auto 1fr;
+        grid-template-columns: 175px 1fr;
         box-sizing: border-box;
         border-radius: 5px;
         margin-bottom: 20px;
