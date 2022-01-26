@@ -16,7 +16,7 @@
         },
         events: {
             label: 'Events',
-            endpoint: '/courses',
+            endpoint: '/courses?all=true',
         },
         presenters: {
             label: 'Presenters',

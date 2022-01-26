@@ -17,7 +17,7 @@
 
     async function getCourses() {
         // Get all courses and populate a select
-        let req = await fetch('/courses');
+        let req = await fetch('/courses?all=true');
         let data = await req.json();
 
         options = data.map(({ id, title, starts }) => {
