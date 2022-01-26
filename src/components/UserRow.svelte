@@ -8,6 +8,7 @@
     export let id;
     export let email;
     export let role;
+    export let location;
 
     let value = role.id;
 
@@ -50,7 +51,7 @@
 
 <tr data-id={id}>
     <td>{name.split(' ').reverse().splice(0, 2).join(', ')}</td>
-    <td>Coming soon!</td>
+    <td>{location.name}</td>
     <td>{email}</td>
     <td>
         <select bind:value {id} on:blur={handleChange}>
