@@ -51,10 +51,10 @@
 
 <tr data-id={id}>
     <td>{name.split(' ').reverse().splice(0, 2).join(', ')}</td>
-    {#if location && location.name}
-        <td>{location.name}</td>
-    {:else}
+    {#if !location}
         <td />
+    {:else}
+        <td>{location.name}</td>
     {/if}
     <td>{email}</td>
     <td>
