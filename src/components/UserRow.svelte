@@ -51,7 +51,11 @@
 
 <tr data-id={id}>
     <td>{name.split(' ').reverse().splice(0, 2).join(', ')}</td>
-    <td>{location.name}</td>
+    {#if location && location.name}
+        <td>{location.name}</td>
+    {:else}
+        <td />
+    {/if}
     <td>{email}</td>
     <td>
         <select bind:value {id} on:blur={handleChange}>
