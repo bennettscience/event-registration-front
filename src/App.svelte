@@ -27,6 +27,7 @@
     import Presenter from './pages/presenter.svelte';
     import Documents from './pages/documents.svelte';
     import Users from './pages/users.svelte';
+    import Location from './pages/location.svelte';
 
     // set default component
     let current = Login;
@@ -47,6 +48,7 @@
     page('/presenter', () => (current = Presenter));
     page('/documents', () => (current = Documents));
     page('/people', () => (current = Users));
+    page('/your-location', () => (current = Location));
 
     // activate router
     page.start();
@@ -70,7 +72,11 @@
             if (data.login === true) {
                 $user = data.user;
                 isAuthenticated = true;
-                current = Home;
+                if ($user.location === null) {
+                    current = Location;
+                } else {
+                    current = Home;
+                }
             }
         } catch (err) {
             handleToast(err);
