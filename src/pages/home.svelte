@@ -22,7 +22,7 @@
     });
 
     const getCourses = async () => {
-        const urls = [`/courses`, `/users/${$user.id}/registrations`];
+        const urls = [`/courses?all=false`, `/users/${$user.id}/registrations`];
         let data = await Promise.all(
             urls.map(async (url) => {
                 const resp = handleErrors(await fetch(url));
@@ -34,23 +34,25 @@
         $registrations = data[1];
 
         // Add a state icon to each course;
-        $courses.map((course) => {
-            let reg = $registrations.find((el) => {
-                return el.course.id === course.id;
-            });
-            try {
-                if (reg && reg.attended) {
-                    course['state'] = 'attended';
-                } else if (reg) {
-                    course['state'] = 'registered';
-                } else {
-                    course['state'] = 'available';
+        if ($courses.length) {
+            $courses.map((course) => {
+                let reg = $registrations.find((el) => {
+                    return el.course.id === course.id;
+                });
+                try {
+                    if (reg && reg.attended) {
+                        course['state'] = 'attended';
+                    } else if (reg) {
+                        course['state'] = 'registered';
+                    } else {
+                        course['state'] = 'available';
+                    }
+                    return course;
+                } catch (e) {
+                    d('handleToast', e);
                 }
-                return course;
-            } catch (e) {
-                d('handleToast', e);
-            }
-        });
+            });
+        }
 
         $registrations.map((course) => {
             if (course.attended) {
@@ -71,8 +73,8 @@
     class="main-container"
 >
     <!-- {#await $courses then courses} -->
-    {#if $courses.length === 0}
-        <p>Loading...</p>
+    {#if !$courses.length}
+        <p>{$courses.message}</p>
     {:else}
         {#each $courses as course (course.id)}
             <Course
