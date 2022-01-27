@@ -19,7 +19,8 @@ export default function jodit(node, options) {
         showCharsCounter: false,
         showWordsCounter: false,
         showXPathInStatusbar: false,
-        tabIndex: 0
+        tabIndex: 0,
+        askBeforePasteHTML: false,
     })
     
     // Accept a `value` param to pre-load formatted text into the editor
