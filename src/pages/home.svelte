@@ -18,7 +18,7 @@
 
     onMount(() => {
         $courseDetail = courseDetailInitial;
-        getCourses();
+        // getCourses();
     });
 
     const getCourses = async () => {
@@ -72,20 +72,22 @@
     }}
     class="main-container"
 >
-    <!-- {#await $courses then courses} -->
-    {#if !$courses.length}
-        <p>{$courses.message}</p>
-    {:else}
-        {#each $courses as course (course.id)}
-            <Course
-                {course}
-                on:showSidebar={() => {
-                    sidebarVisible = !sidebarVisible;
-                }}
-            />
-        {/each}
-    {/if}
-    <!-- {/await} -->
+    {#await getCourses()}
+        <p>Loading...</p>
+    {:then _}
+        {#if !$courses.length}
+            <p>{$courses.message}</p>
+        {:else}
+            {#each $courses as course (course.id)}
+                <Course
+                    {course}
+                    on:showSidebar={() => {
+                        sidebarVisible = !sidebarVisible;
+                    }}
+                />
+            {/each}
+        {/if}
+    {/await}
 </section>
 {#if sidebarVisible}
     <section class="course-detail" transition:fly={{ x: 200, duration: 500 }}>
