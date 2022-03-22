@@ -13,6 +13,7 @@
     import TextArea from './formFields/TextArea.svelte';
     import Link from './formFields/Link.svelte';
     import Hidden from './formFields/Hidden.svelte';
+    import Radio from './formFields/Radio.svelte';
 
     // pass in a function handler to onSubmit by the parent.
     export let onSubmit;
@@ -81,6 +82,13 @@
                 bind:value={field.value}
                 placeholder={field.placeholder}
                 label={field.label}
+            />
+        {:else if field.type === 'Radio'}
+            <Radio
+                bind:value={field.value}
+                label={field.label}
+                name={field.name}
+                options={field.options}
             />
         {/if}
     {/each}

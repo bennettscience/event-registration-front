@@ -293,7 +293,7 @@
         const urls = [
             `/users/${resourceId}`,
             `/users/${resourceId}/registrations`,
-            `/courses`,
+            `/courses?all=true`,
         ];
 
         await Promise.all(

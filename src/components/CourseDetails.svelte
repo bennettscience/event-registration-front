@@ -7,7 +7,7 @@
         courses,
         registrations,
     } from '../store.js';
-    import RegisterButton from './buttons/RegisterButton.svelte';
+    import RegisterForm from './buttons/RegisterForm.svelte';
     import CancelButton from './buttons/CancelButton.svelte';
     import { formatDate } from '../utils.js';
 
@@ -103,7 +103,7 @@
     {:else if $courseDetail.state === 'available' && $courseDetail.state !== 'attended'}
         <!-- The register button makes the actual API call to the backend. This event updates the
              ui depeding on the results of that call. Same case for cancelling course registrations. -->
-        <RegisterButton
+        <RegisterForm
             {disabled}
             id={$courseDetail?.id}
             on:register={handleRegister}
@@ -112,7 +112,7 @@
 {:else if $courseDetail.available === 0 && $courseDetail.state === 'registered'}
     <CancelButton id={$courseDetail.id} on:cancel={handleCancel} />
 {:else}
-    <RegisterButton {disabled} id={$courseDetail?.id} />
+    <RegisterForm {disabled} id={$courseDetail?.id} />
 {/if}
 <hr />
 <time>
