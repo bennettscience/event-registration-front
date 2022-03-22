@@ -87,6 +87,8 @@
 
     onDestroy(() => ($courseDetail = courseDetailInitial));
 
+    console.log($courseDetail);
+
     $: startDateTime = formatDate('starts', $courseDetail.starts);
     $: endTime = formatDate('ends', $courseDetail.ends);
     $: links = links;
@@ -112,7 +114,7 @@
 {:else if $courseDetail.available === 0 && $courseDetail.state === 'registered'}
     <CancelButton id={$courseDetail.id} on:cancel={handleCancel} />
 {:else}
-    <RegisterForm {disabled} id={$courseDetail?.id} />
+    <RegisterForm disabled="true" id={$courseDetail?.id} />
 {/if}
 <hr />
 <time>

@@ -18,6 +18,10 @@
     // pass in a function handler to onSubmit by the parent.
     export let onSubmit;
     export let fields;
+    export let buttonLabel = 'Submit';
+    export let disabled = false;
+
+    console.log(`Disabled: ${disabled}`);
 
     // Convert fields from [ { name: 'name', value: 'Value' } ] to { name : Value } which is more useful when submitting a form
     const fieldsToObject = (fields) =>
@@ -92,18 +96,17 @@
             />
         {/if}
     {/each}
-    <button tabindex="0" type="submit">Submit</button>
+    <button tabindex="0" type="submit" {disabled}>{buttonLabel}</button>
 </form>
 
 <style>
     form {
         display: block;
         position: relative;
-        margin-bottom: 40px;
     }
     :global(button[type='submit']) {
-        position: absolute;
-        right: 20px;
+        display: block;
+        margin: 0 auto;
         padding: 10px 30px;
         border: 3px solid var(--accent-blue);
         background-color: var(--accent-blue);
@@ -119,5 +122,10 @@
     }
     :global(button[type='submit']:focus) {
         border-color: var(--site-dark);
+    }
+    button:disabled {
+        background-color: var(--site-gray);
+        border-color: var(--site-gray);
+        pointer-events: none;
     }
 </style>

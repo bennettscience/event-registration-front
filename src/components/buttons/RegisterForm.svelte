@@ -7,6 +7,12 @@
     export let id;
     export let disabled;
 
+    let buttonLabel = 'Register';
+
+    if (disabled) {
+        buttonLabel = 'Event Full';
+    }
+
     let showLoader = false;
     let fields = [
         {
@@ -59,40 +65,12 @@
     }
 </script>
 
-<Form {fields} onSubmit={(body) => handleSubmit(body)} />
+<Form
+    {fields}
+    {disabled}
+    {buttonLabel}
+    onSubmit={(body) => handleSubmit(body)}
+/>
 
-<!-- <span class:disabled role="button" on:click={handleClick}>
-    {#if showLoader}
-        <Loader />
-    {:else if disabled}
-        Event full
-    {:else}
-        Register
-    {/if}
-</span> -->
 <style>
-    span {
-        display: flex;
-        font-weight: 700;
-        font-family: 'Roboto', Arial, Helvetica, sans-serif;
-        font-size: 20px;
-        border-radius: 5px;
-        background-color: var(--accent-blue);
-        color: var(--text-white);
-        width: 50%;
-        height: 36px;
-        margin: 0 auto;
-        cursor: pointer;
-        align-items: center;
-        justify-content: center;
-        transition: 0.125s all ease-in-out;
-    }
-
-    span:hover {
-        box-shadow: var(--active-shadow);
-    }
-    .disabled {
-        background-color: var(--site-gray);
-        pointer-events: none;
-    }
 </style>
