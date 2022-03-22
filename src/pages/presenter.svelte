@@ -90,9 +90,9 @@
                 />
             {/await}
         </section>
-        <section class="course-heading">
-            <h2>{currentEvent}</h2>
-            {#if courseId !== null}
+        {#if courseId !== null}
+            <section class="course-heading">
+                <h2>{currentEvent}</h2>
                 <span
                     tabindex="0"
                     class="form-toggle"
@@ -137,8 +137,16 @@
                     on:click={changeCourseState}
                     >{#if result.active}Cancel Event{:else}Activate Event{/if}</span
                 >
+            </section>
+            {#if result.accommodations.length > 0}
+                <div id="notes">
+                    <h3>Accommodations requested:</h3>
+                    {#each result.accommodations as item}
+                        <p>{item.note}</p>
+                    {/each}
+                </div>
             {/if}
-        </section>
+        {/if}
 
         <section class="table registrations">
             <RegistrationTable {registrations} bind:courseId />
@@ -177,6 +185,16 @@
         flex-direction: column;
         flex-grow: 1;
     }
+
+    #notes {
+        padding: 1.5rem;
+        background-color: var(--site-gray);
+    }
+
+    h3 {
+        margin-block-start: 0;
+    }
+
     .table {
         height: 300px;
         overflow: scroll;

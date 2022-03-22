@@ -49,6 +49,7 @@
         );
         courseId = data.id;
         result = data;
+        console.log(result);
         // rate = getRate(registrations);
     }
 
@@ -137,6 +138,14 @@
                 on:click={d('deleteCourse', { courseId: courseId })}
                 >Delete Event</span
             >
+            {#if result.accommodations.length > 0}
+                <div id="notes">
+                    <h2>Accommodations requested:</h2>
+                    {#each result.accommodations as item}
+                        <p>{item.note}</p>
+                    {/each}
+                </div>
+            {/if}
         </section>
     {/if}
 </section>
@@ -145,6 +154,7 @@
     .course-data {
         display: grid;
         grid-template-areas: 'select snapshot' 'registrations snapshot';
+        grid-template-columns: 1fr 35%;
         grid-gap: 10px;
     }
     .course-select {
