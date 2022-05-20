@@ -154,7 +154,7 @@
     .course-data {
         display: grid;
         grid-template-areas: 'select snapshot' 'registrations snapshot';
-        grid-template-columns: 1fr 35%;
+        grid-template-columns: 1fr 15%;
         grid-gap: 10px;
     }
     .course-select {
